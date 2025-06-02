@@ -27,7 +27,7 @@ const PersonnelProtectedRoute = () => {
   }, [setIsLoggedIn, setRole]);
 
   if (loading) return <div className="p-4">Checking personnel access...</div>;
-  if (!loading && !isLoggedIn) return <Navigate to="/auth" replace />;
+  if (!loading && !isLoggedIn) return <Navigate to="/login" replace />;
   return isLoggedIn && role === "personnel" && !loading ? (
     <Outlet />
   ) : (

@@ -28,7 +28,7 @@ const AdminProtectedRoute = () => {
   }, [setIsLoggedIn, setRole]);
 
   if (loading) return <div className="p-4">Checking admin access...</div>;
-  if (!loading && !isLoggedIn) return <Navigate to="/auth" replace />;
+  if (!loading && !isLoggedIn) return <Navigate to="/login" replace />;
   return isLoggedIn && role === "admin" && !loading ? (
     <Outlet />
   ) : (

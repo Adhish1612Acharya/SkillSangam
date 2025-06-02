@@ -30,34 +30,30 @@ import OfficerProtectedRoute from "./OfficerProtectedRoute";
 import FamilyProtectedRoute from "./FamilyProtectedRoute";
 import PersonnelProtectedRoute from "./PersonnelProtectedRoute";
 
-import { Routes, Route, Navigate } from 'react-router-dom'
-import { useAuth } from '../context/AuthContext'
-import Layout from '../components/RoleBasedLayout'
-import Login from '../pages/auth/Login'
-import RegisterSoldier from '../pages/auth/RegisterSoldier'
-import RegisterFamily from '../pages/auth/RegisterFamily'
-import RegisterGovt from '../pages/auth/RegisterGovt'
-import RegisterAdmin from '../pages/auth/RegisterAdmin'
-import SoldierDashboard from '../pages/dashboard/SoldierDashboard'
-import FamilyDashboard from '../pages/dashboard/FamilyDashboard'
-import GovtDashboard from '../pages/dashboard/GovtDashboard'
-import AdminDashboard from '../pages/admin/AdminDashboard'
-import SchemeList from '../pages/schemes/SchemeList'
-import SchemeApply from '../pages/schemes/SchemeApply'
-import ApplicationStatus from '../pages/schemes/ApplicationStatus'
-import FileGrievance from '../pages/grievance/FileGrievance'
-import TrackGrievance from '../pages/grievance/TrackGrievance'
-import Marketplace from '../pages/marketplace/Marketplace'
-import PostItem from '../pages/marketplace/PostItem'
-import Location from '../pages/marketplace/Location'
-import ItemChat from '../pages/marketplace/ItemChat'
-import SOSPage from '../pages/emergency/SOSPage'
-import Forum from '../pages/community/Forum'
-import SuccessStories from '../pages/community/SuccessStories'
-import Events from '../pages/community/Events'
-import Chatbot from '../pages/ai/Chatbot'
-import AIBenefitRecommender from '../pages/ai/AIBenefitRecommender'
-import NotFound from '../pages/NotFound'
+
+// import RegisterFamily from '../pages/auth/RegisterFamily'
+// import RegisterGovt from '../pages/auth/RegisterGovt'
+// import RegisterAdmin from '../pages/auth/RegisterAdmin'
+// import SoldierDashboard from '../pages/dashboard/SoldierDashboard'
+// import FamilyDashboard from '../pages/dashboard/FamilyDashboard'
+// import GovtDashboard from '../pages/dashboard/GovtDashboard'
+// import AdminDashboard from '../pages/admin/AdminDashboard'
+// import SchemeList from '../pages/schemes/SchemeList'
+// import SchemeApply from '../pages/schemes/SchemeApply'
+// import ApplicationStatus from '../pages/schemes/ApplicationStatus'
+// import FileGrievance from '../pages/grievance/FileGrievance'
+// import TrackGrievance from '../pages/grievance/TrackGrievance'
+// import Marketplace from '../pages/marketplace/Marketplace'
+// import PostItem from '../pages/marketplace/PostItem'
+// import Location from '../pages/marketplace/Location'
+// import ItemChat from '../pages/marketplace/ItemChat'
+// import SOSPage from '../pages/emergency/SOSPage'
+// import Forum from '../pages/community/Forum'
+// import SuccessStories from '../pages/community/SuccessStories'
+// import Events from '../pages/community/Events'
+// import Chatbot from '../pages/ai/Chatbot'
+// import AIBenefitRecommender from '../pages/ai/AIBenefitRecommender'
+// import NotFound from '../pages/NotFound'
 
 
 const AppRoutes = () => {
@@ -89,7 +85,7 @@ const AppRoutes = () => {
       />
 
       {/* Protected Routes */}
-      <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}>
+      {/* <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}> */}
         {/* Common Routes */}
         <Route path="schemes" element={<SchemeList />} />
 
@@ -134,7 +130,7 @@ const AppRoutes = () => {
         <Route element={<AdminProtectedRoute />}>
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
         </Route>
-      </Route>
+      {/* </Route> */}
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
