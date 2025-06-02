@@ -31,13 +31,17 @@ const pulse = keyframes`
   100% { transform: scale(1); }
 `;
 
-const AnimatedCard = styled(Card)(({ theme }) => ({
-  transition: 'all 0.3s ease',
-  '&:hover': {
-    transform: 'translateY(-2px)',
-    boxShadow: theme.shadows[6]
-  }
-}));
+const AnimatedCard = styled(Card)(({ theme }) => {
+  // Fallback for MUI v6+ where theme.shadows is not an array
+  const safeShadow = Array.isArray(theme.shadows) ? theme.shadows[6] : (theme.shadows?.lg || '0px 3px 6px rgba(0,0,0,0.1)');
+  return {
+    transition: 'all 0.3s ease',
+    '&:hover': {
+      transform: 'translateY(-2px)',
+      boxShadow: safeShadow
+    }
+  };
+});
 
 const Chatbot = () => {
   const [message, setMessage] = useState('');

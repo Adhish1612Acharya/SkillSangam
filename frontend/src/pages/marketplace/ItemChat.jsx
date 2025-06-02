@@ -1,12 +1,44 @@
-import { useState } from 'react'
-import { useParams } from 'react-router-dom'
-import { ArrowLeft, Send, User, MessageSquare } from 'lucide-react'
-import Card from '../../components/Card'
-import Button from '../../components/Button'
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { ArrowBack, Send, Person, Message } from '@mui/icons-material';
+import {
+  Box,
+  Typography,
+  IconButton,
+  Card,
+  CardContent,
+  CardHeader,
+  Avatar,
+  TextField,
+  InputAdornment,
+  Button,
+  Divider,
+  List,
+  ListItem,
+  ListItemAvatar,
+  ListItemText,
+  Paper,
+  Chip
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const MessageBubble = styled(Paper)(({ theme, sender }) => ({
+  maxWidth: '70%',
+  padding: theme.spacing(1.5),
+  marginBottom: theme.spacing(1),
+  borderRadius: sender === 'buyer' 
+    ? '18px 18px 4px 18px' 
+    : '18px 18px 18px 4px',
+  backgroundColor: sender === 'buyer' 
+    ? theme.palette.primary.main 
+    : theme.palette.grey[100],
+  color: sender === 'buyer' ? '#fff' : theme.palette.text.primary,
+  alignSelf: sender === 'buyer' ? 'flex-end' : 'flex-start',
+}));
 
 const ItemChat = () => {
-  const { id } = useParams()
-  const [message, setMessage] = useState('')
+  const { id } = useParams();
+  const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([
     {
       id: 1,
@@ -26,7 +58,7 @@ const ItemChat = () => {
       sender: 'buyer',
       time: '10:33 AM'
     }
-  ])
+  ]);
 
   // Mock item data
   const item = {
@@ -34,96 +66,115 @@ const ItemChat = () => {
     title: 'Tactical Backpack',
     price: '₹2500',
     seller: 'Maj. Singh'
-  }
+  };
 
   const handleSendMessage = (e) => {
-    e.preventDefault()
-    if (!message.trim()) return
+    e.preventDefault();
+    if (!message.trim()) return;
 
     const newMessage = {
       id: messages.length + 1,
       text: message,
       sender: 'buyer',
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
-    }
+    };
 
-    setMessages([...messages, newMessage])
-    setMessage('')
-  }
+    setMessages([...messages, newMessage]);
+    setMessage('');
+  };
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="flex items-center gap-4 mb-6">
-        <button 
-          onClick={() => window.history.back()}
-          className="flex items-center gap-1 text-primary"
-        >
-          <ArrowLeft className="w-5 h-5" />
-        </button>
-        <h1 className="text-2xl font-bold">Chat with Seller</h1>
-      </div>
+    <Box sx={{ maxWidth: 'md', mx: 'auto', p: 2 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 3 }}>
+        <IconButton onClick={() => window.history.back()} color="primary">
+          <ArrowBack />
+        </IconButton>
+        <Typography variant="h5" component="h1" sx={{ ml: 1, fontWeight: 'bold' }}>
+          Chat with Seller
+        </Typography>
+      </Box>
 
-      <Card className="mb-4">
-        <div className="flex justify-between items-center">
-          <div>
-            <h3 className="font-semibold">{item.title}</h3>
-            <p className="text-primary font-medium">{item.price}</p>
-          </div>
-          <div className="flex items-center gap-2 text-gray-600">
-            <User className="w-4 h-4" />
-            <span>{item.seller}</span>
-          </div>
-        </div>
+      <Card sx={{ mb: 3 }}>
+        <CardContent>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+            <Box>
+              <Typography variant="h6" component="h3" sx={{ fontWeight: 'medium' }}>
+                {item.title}
+              </Typography>
+              <Typography variant="body1" color="primary" sx={{ fontWeight: 'medium' }}>
+                {item.price}
+              </Typography>
+            </Box>
+            <Chip
+              avatar={<Avatar><Person /></Avatar>}
+              label={item.seller}
+              variant="outlined"
+            />
+          </Box>
+        </CardContent>
       </Card>
 
-      <Card className="h-[500px] flex flex-col">
-        <div className="flex-1 overflow-y-auto p-4 space-y-4">
-          {messages.map((msg) => (
-            <div 
-              key={msg.id} 
-              className={`flex ${msg.sender === 'buyer' ? 'justify-end' : 'justify-start'}`}
-            >
-              <div 
-                className={`max-w-[80%] p-3 rounded-lg ${
-                  msg.sender === 'buyer' 
-                    ? 'bg-primary text-white rounded-br-none' 
-                    : 'bg-gray-100 text-gray-800 rounded-bl-none'
-                }`}
-              >
-                <p>{msg.text}</p>
-                <p className={`text-xs mt-1 ${
-                  msg.sender === 'buyer' ? 'text-primary-200' : 'text-gray-500'
-                }`}>
-                  {msg.time}
-                </p>
-              </div>
-            </div>
-          ))}
-        </div>
+      <Card sx={{ height: '500px', display: 'flex', flexDirection: 'column' }}>
+        <Box sx={{ flex: 1, overflowY: 'auto', p: 2 }}>
+          <List sx={{ width: '100%' }}>
+            {messages.map((msg) => (
+              <ListItem key={msg.id} sx={{ 
+                display: 'flex', 
+                justifyContent: msg.sender === 'buyer' ? 'flex-end' : 'flex-start',
+                px: 0,
+                py: 0.5
+              }}>
+                <MessageBubble sender={msg.sender} elevation={2}>
+                  <Typography variant="body1">{msg.text}</Typography>
+                  <Typography 
+                    variant="caption" 
+                    sx={{ 
+                      display: 'block',
+                      mt: 0.5,
+                      color: msg.sender === 'buyer' ? 'primary.light' : 'text.secondary'
+                    }}
+                  >
+                    {msg.time}
+                  </Typography>
+                </MessageBubble>
+              </ListItem>
+            ))}
+          </List>
+        </Box>
 
-        <form onSubmit={handleSendMessage} className="border-t border-gray-200 p-4">
-          <div className="flex gap-2">
-            <input
-              type="text"
+        <Divider />
+        <Box component="form" onSubmit={handleSendMessage} sx={{ p: 2 }}>
+          <Box sx={{ display: 'flex', gap: 1 }}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              size="small"
               value={message}
               onChange={(e) => setMessage(e.target.value)}
               placeholder="Type your message..."
-              className="flex-1 border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary-light"
-              required
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton 
+                      type="submit" 
+                      color="primary"
+                      disabled={!message.trim()}
+                    >
+                      <Send />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
             />
-            <Button type="submit" className="flex items-center gap-1">
-              <Send className="w-4 h-4" />
-              <span className="sr-only">Send</span>
-            </Button>
-          </div>
-        </form>
+          </Box>
+        </Box>
       </Card>
 
-      <div className="mt-4 text-center text-sm text-gray-500">
-        <p>For your safety, keep all communications within the platform</p>
-      </div>
-    </div>
-  )
-}
+      <Typography variant="body2" color="text.secondary" align="center" sx={{ mt: 2 }}>
+        For your safety, keep all communications within the platform
+      </Typography>
+    </Box>
+  );
+};
 
-export default ItemChat
+export default ItemChat;

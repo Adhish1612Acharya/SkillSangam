@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { 
-  Warning, 
+import {  
   Phone, 
   LocationOn, 
   People, 

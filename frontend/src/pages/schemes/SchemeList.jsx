@@ -1,171 +1,390 @@
-import { useState } from 'react'
-import { Link } from 'react-router-dom'
-import { Search, Filter, Star, Clock, CheckCircle } from 'lucide-react'
-import Card from '../../components/Card'
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import { Search, FilterAlt, Star, AccessTime, CheckCircle } from '@mui/icons-material';
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  InputAdornment,
+  MenuItem,
+  Select,
+  Card,
+  CardContent,
+  CardActions,
+  Chip,
+  Grid,
+  Container,
+  Avatar,
+  Divider,
+  Slide,
+  Fade,
+  Grow,
+  Skeleton
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+import { indigo, blue, amber, green, red, grey } from '@mui/material/colors';
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  transition: theme.transitions.create(['transform', 'box-shadow'], {
+    duration: theme.transitions.duration.standard,
+  }),
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: theme.shadows[8],
+  },
+}));
+
+const CategoryChip = styled(Chip)(({ theme }) => ({
+  marginRight: theme.spacing(1),
+  marginBottom: theme.spacing(1),
+}));
+
+const RecommendedBadge = styled(Chip)(({ theme }) => ({
+  backgroundColor: amber[100],
+  color: amber[800],
+  marginLeft: theme.spacing(1),
+  '& .MuiChip-icon': {
+    color: amber[600],
+  },
+}));
 
 const SchemeList = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [filter, setFilter] = useState('all')
-  
+  const [searchTerm, setSearchTerm] = useState('');
+  const [filter, setFilter] = useState('all');
+  const [loading, setLoading] = useState(false);
+
+  // Simulate loading
+  setTimeout(() => setLoading(false), 1000);
+
   const schemes = [
     {
       id: 1,
       title: 'Education Grant for Children',
-      description: 'Financial assistance for education of soldiers children',
+      description: 'Financial assistance for education of soldiers children up to graduation level with annual renewal option.',
       category: 'education',
       eligibility: 'All serving personnel',
       deadline: '2023-12-31',
       recommended: true,
+      icon: 'school',
     },
     {
       id: 2,
-      title: 'Housing Loan Subsidy',
-      description: 'Interest subsidy on home loans for serving and retired personnel',
+      title: 'Housing Loan Subsidy Scheme',
+      description: 'Interest subsidy on home loans for serving and retired personnel with flexible repayment options.',
       category: 'housing',
       eligibility: 'Minimum 5 years of service',
       deadline: 'Ongoing',
       recommended: false,
+      icon: 'home',
     },
     {
       id: 3,
-      title: 'Healthcare Coverage Extension',
-      description: 'Extended healthcare benefits for family members',
+      title: 'Comprehensive Healthcare Coverage',
+      description: 'Extended healthcare benefits for family members including dental and vision coverage.',
       category: 'health',
       eligibility: 'All serving personnel',
       deadline: '2023-11-30',
       recommended: true,
+      icon: 'medical_services',
     },
     {
       id: 4,
-      title: 'Skill Development Program',
-      description: 'Vocational training for retiring personnel',
+      title: 'Vocational Training Program',
+      description: 'Skill development and certification programs for retiring personnel in high-demand fields.',
       category: 'employment',
       eligibility: 'Personnel retiring within 2 years',
       deadline: '2024-03-15',
       recommended: false,
+      icon: 'work',
     },
-  ]
+    {
+      id: 5,
+      title: 'Family Welfare Assistance',
+      description: 'Monthly stipend for families of personnel deployed in high-risk zones.',
+      category: 'welfare',
+      eligibility: 'Active deployment status',
+      deadline: '2024-06-30',
+      recommended: true,
+      icon: 'family_restroom',
+    },
+  ];
+
+  const categoryColors = {
+    education: blue[500],
+    housing: indigo[500],
+    health: green[500],
+    employment: amber[600],
+    welfare: red[500],
+  };
 
   const filteredSchemes = schemes.filter(scheme => {
     const matchesSearch = scheme.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         scheme.description.toLowerCase().includes(searchTerm.toLowerCase())
+                         scheme.description.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesFilter = filter === 'all' || 
                          (filter === 'recommended' && scheme.recommended) || 
-                         scheme.category === filter
-    return matchesSearch && matchesFilter
-  })
+                         scheme.category === filter;
+    return matchesSearch && matchesFilter;
+  });
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-        <h1 className="text-2xl font-bold">Available Schemes</h1>
-        <Link 
-          to="/ai/recommender" 
-          className="flex items-center gap-2 bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors"
-        >
-          <Star className="w-5 h-5" />
-          <span>Get AI Recommendations</span>
-        </Link>
-      </div>
-      
+    <Container maxWidth="lg" sx={{ py: 4 }}>
+      <Slide direction="down" in={true} mountOnEnter unmountOnExit>
+        <Box sx={{ mb: 4 }}>
+          <Grid container justifyContent="space-between" alignItems="center" spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Typography variant="h4" component="h1" fontWeight="bold" color="primary">
+                Available Schemes
+              </Typography>
+              <Typography variant="subtitle1" color="text.secondary">
+                Browse and apply for benefits tailored for defense personnel
+              </Typography>
+            </Grid>
+            <Grid item xs={12} md={6} sx={{ textAlign: { xs: 'left', md: 'right' } }}>
+              <Button
+                component={Link}
+                to="/ai/recommender"
+                variant="contained"
+                color="primary"
+                size="large"
+                startIcon={<Star />}
+                sx={{
+                  px: 3,
+                  py: 1.5,
+                  borderRadius: 2,
+                  boxShadow: 2,
+                  '&:hover': {
+                    boxShadow: 4,
+                  }
+                }}
+              >
+                Get AI Recommendations
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Slide>
+
       {/* Search and Filter */}
-      <Card>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search schemes..."
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light"
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-            />
-          </div>
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <select
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light"
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-            >
-              <option value="all">All Schemes</option>
-              <option value="recommended">Recommended</option>
-              <option value="education">Education</option>
-              <option value="housing">Housing</option>
-              <option value="health">Health</option>
-              <option value="employment">Employment</option>
-            </select>
-          </div>
-        </div>
-      </Card>
-      
+      <Fade in={true} timeout={800}>
+        <Card sx={{ mb: 3, p: 3, borderRadius: 3 }}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} md={6}>
+              <TextField
+                fullWidth
+                variant="outlined"
+                placeholder="Search schemes..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <Search color="action" />
+                    </InputAdornment>
+                  ),
+                  sx: { borderRadius: 2 }
+                }}
+                sx={{
+                  '& .MuiOutlinedInput-root': {
+                    '& fieldset': {
+                      borderColor: grey[300],
+                    },
+                    '&:hover fieldset': {
+                      borderColor: 'primary.main',
+                    },
+                  }
+                }}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Select
+                fullWidth
+                variant="outlined"
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                startAdornment={
+                  <InputAdornment position="start" sx={{ mr: 1 }}>
+                    <FilterAlt color="action" />
+                  </InputAdornment>
+                }
+                sx={{
+                  borderRadius: 2,
+                  '& .MuiSelect-select': {
+                    display: 'flex',
+                    alignItems: 'center',
+                    pl: 1,
+                  }
+                }}
+              >
+                <MenuItem value="all">All Schemes</MenuItem>
+                <MenuItem value="recommended">Recommended</MenuItem>
+                <MenuItem value="education">Education</MenuItem>
+                <MenuItem value="housing">Housing</MenuItem>
+                <MenuItem value="health">Health</MenuItem>
+                <MenuItem value="employment">Employment</MenuItem>
+                <MenuItem value="welfare">Welfare</MenuItem>
+              </Select>
+            </Grid>
+          </Grid>
+        </Card>
+      </Fade>
+
       {/* AI Recommendations Section */}
       {filter === 'recommended' && (
-        <Card className="bg-blue-50 border border-blue-100">
-          <div className="flex items-start gap-4">
-            <div className="bg-blue-100 p-3 rounded-full">
-              <Star className="text-blue-600 w-5 h-5" />
-            </div>
-            <div>
-              <h3 className="font-semibold text-blue-800">AI-Powered Recommendations</h3>
-              <p className="text-sm text-blue-600">
-                These schemes are personalized for you based on your service profile, 
-                family details, and previous applications.
-              </p>
-            </div>
-          </div>
-        </Card>
-      )}
-      
-      {/* Scheme List */}
-      <div className="grid grid-cols-1 gap-4">
-        {filteredSchemes.length > 0 ? (
-          filteredSchemes.map((scheme) => (
-            <Card key={scheme.id} className="hover:shadow-lg transition-shadow">
-              <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                <div>
-                  <div className="flex items-center gap-2">
-                    <h2 className="text-xl font-semibold">{scheme.title}</h2>
-                    {scheme.recommended && (
-                      <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full flex items-center gap-1">
-                        <Star className="w-3 h-3" />
-                        Recommended
-                      </span>
-                    )}
-                  </div>
-                  <p className="text-gray-600 mt-1">{scheme.description}</p>
-                  <div className="flex flex-wrap gap-2 mt-3">
-                    <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
-                      {scheme.category}
-                    </span>
-                    <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full">
-                      {scheme.eligibility}
-                    </span>
-                  </div>
-                </div>
-                <div className="flex flex-col items-end gap-2">
-                  <div className="flex items-center gap-1 text-sm text-gray-600">
-                    <Clock className="w-4 h-4" />
-                    <span>{scheme.deadline}</span>
-                  </div>
-                  <Link
-                    to={`/schemes/apply/${scheme.id}`}
-                    className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary-dark transition-colors text-sm font-medium"
-                  >
-                    Apply Now
-                  </Link>
-                </div>
-              </div>
-            </Card>
-          ))
-        ) : (
-          <Card className="text-center py-8">
-            <p className="text-gray-500">No schemes found matching your criteria</p>
+        <Fade in={true} timeout={1000}>
+          <Card sx={{ 
+            mb: 3, 
+            p: 3, 
+            borderRadius: 3,
+            backgroundColor: blue[50],
+            borderLeft: `4px solid ${blue[500]}`,
+            boxShadow: 'none'
+          }}>
+            <Grid container alignItems="center" spacing={2}>
+              <Grid item xs="auto">
+                <Avatar sx={{ bgcolor: blue[100], width: 48, height: 48 }}>
+                  <Star sx={{ color: blue[600] }} />
+                </Avatar>
+              </Grid>
+              <Grid item xs>
+                <Typography variant="h6" color={blue[800]} fontWeight="medium">
+                  AI-Powered Recommendations
+                </Typography>
+                <Typography variant="body2" color={blue[600]}>
+                  These schemes are personalized for you based on your service profile, 
+                  family details, and previous applications.
+                </Typography>
+              </Grid>
+            </Grid>
           </Card>
-        )}
-      </div>
-    </div>
-  )
-}
+        </Fade>
+      )}
 
-export default SchemeList
+      {/* Scheme List */}
+      <Box sx={{ mt: 4 }}>
+        {loading ? (
+          <Grid container spacing={3}>
+            {[1, 2, 3].map((item) => (
+              <Grid item xs={12} key={item}>
+                <Skeleton variant="rectangular" height={150} sx={{ borderRadius: 2 }} />
+              </Grid>
+            ))}
+          </Grid>
+        ) : filteredSchemes.length > 0 ? (
+          <Grid container spacing={3}>
+            {filteredSchemes.map((scheme, index) => (
+              <Grid item xs={12} key={scheme.id}>
+                <Grow in={true} timeout={(index + 1) * 200}>
+                  <StyledCard>
+                    <CardContent>
+                      <Grid container spacing={2}>
+                        <Grid item xs={12} md={8}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                            <Typography variant="h5" component="h2" fontWeight="medium">
+                              {scheme.title}
+                            </Typography>
+                            {scheme.recommended && (
+                              <RecommendedBadge
+                                icon={<Star fontSize="small" />}
+                                label="Recommended"
+                                size="small"
+                              />
+                            )}
+                          </Box>
+                          <Typography variant="body1" color="text.secondary" paragraph>
+                            {scheme.description}
+                          </Typography>
+                          <Box sx={{ mt: 1 }}>
+                            <CategoryChip
+                              label={scheme.category}
+                              size="small"
+                              sx={{ 
+                                backgroundColor: `${categoryColors[scheme.category]}20`,
+                                color: categoryColors[scheme.category]
+                              }}
+                            />
+                            <CategoryChip
+                              label={scheme.eligibility}
+                              size="small"
+                              variant="outlined"
+                            />
+                          </Box>
+                        </Grid>
+                        <Grid item xs={12} md={4}>
+                          <Box sx={{ 
+                            display: 'flex', 
+                            flexDirection: 'column', 
+                            height: '100%',
+                            justifyContent: 'space-between',
+                            alignItems: { xs: 'flex-start', md: 'flex-end' }
+                          }}>
+                            <Box sx={{ 
+                              display: 'flex', 
+                              alignItems: 'center',
+                              mb: { xs: 2, md: 0 },
+                              color: scheme.deadline === 'Ongoing' ? green[600] : 'text.secondary'
+                            }}>
+                              <AccessTime fontSize="small" sx={{ mr: 1 }} />
+                              <Typography variant="body2">
+                                {scheme.deadline === 'Ongoing' ? 'No Deadline' : `Deadline: ${scheme.deadline}`}
+                              </Typography>
+                            </Box>
+                            <Button
+                              component={Link}
+                              to={`/schemes/apply/${scheme.id}`}
+                              variant="contained"
+                              color="primary"
+                              size="medium"
+                              fullWidth={false}
+                              sx={{
+                                alignSelf: { xs: 'stretch', md: 'flex-end' },
+                                borderRadius: 2,
+                                px: 3,
+                                py: 1.5,
+                                textTransform: 'none',
+                                fontWeight: 'medium'
+                              }}
+                            >
+                              Apply Now
+                            </Button>
+                          </Box>
+                        </Grid>
+                      </Grid>
+                    </CardContent>
+                  </StyledCard>
+                </Grow>
+              </Grid>
+            ))}
+          </Grid>
+        ) : (
+          <Fade in={true} timeout={1000}>
+            <Card sx={{ textAlign: 'center', p: 8, borderRadius: 3 }}>
+              <Box sx={{ maxWidth: 400, margin: '0 auto' }}>
+                <Search sx={{ fontSize: 60, color: grey[400], mb: 2 }} />
+                <Typography variant="h6" color="text.secondary" gutterBottom>
+                  No schemes found
+                </Typography>
+                <Typography variant="body1" color="text.secondary" paragraph>
+                  We couldn't find any schemes matching your search criteria. Try adjusting your filters.
+                </Typography>
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => {
+                    setSearchTerm('');
+                    setFilter('all');
+                  }}
+                  sx={{ mt: 2 }}
+                >
+                  Reset Filters
+                </Button>
+              </Box>
+            </Card>
+          </Fade>
+        )}
+      </Box>
+    </Container>
+  );
+};
+
+export default SchemeList;

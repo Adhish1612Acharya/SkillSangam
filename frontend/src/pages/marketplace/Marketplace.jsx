@@ -1,22 +1,64 @@
-import { useState } from 'react'
-import { Search, Filter, Heart, MessageSquare, ShoppingCart } from 'lucide-react'
-import Card from '../../components/Card'
+import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { 
+  Search, 
+  FilterList, 
+  Favorite, 
+  FavoriteBorder, 
+  LocationOn, 
+  ShoppingBag 
+} from '@mui/icons-material';
+import {
+  Box,
+  Typography,
+  Card,
+  CardContent,
+  CardMedia,
+  CardActions,
+  TextField,
+  InputAdornment,
+  Button,
+  Divider,
+  Grid,
+  Select,
+  MenuItem,
+  IconButton,
+  Chip,
+  Paper,
+  Pagination
+} from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  transition: 'transform 0.2s, box-shadow 0.2s',
+  '&:hover': {
+    transform: 'translateY(-4px)',
+    boxShadow: theme.shadows[6],
+  },
+}));
 
 const Marketplace = () => {
-  const [searchTerm, setSearchTerm] = useState('')
-  const [category, setCategory] = useState('all')
+  const navigate = useNavigate();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [category, setCategory] = useState('all');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
   
   const items = [
     {
       id: 1,
-      title: 'Military Boots (Size 10)',
+      title: 'Military Boots',
       description: 'Gently used combat boots, excellent condition',
       price: '₹1200',
       category: 'clothing',
-      location: 'Delhi Cantt',
+      size: '10',
+      condition: 'excellent',
+      location: 'Delhi Cantt, New Delhi',
       posted: '2 days ago',
       seller: 'Capt. Sharma',
-      isFavorite: false
+      contact: '+91 9876543210',
+      isFavorite: false,
+      image: '/placeholder-boots.jpg'
     },
     {
       id: 2,
@@ -24,10 +66,13 @@ const Marketplace = () => {
       description: 'Brand new, never used 30L backpack with multiple compartments',
       price: '₹2500',
       category: 'gear',
-      location: 'Pune',
+      condition: 'new',
+      location: 'Pune, Maharashtra',
       posted: '1 week ago',
       seller: 'Maj. Singh',
-      isFavorite: true
+      contact: '+91 8765432109',
+      isFavorite: true,
+      image: '/placeholder-backpack.jpg'
     },
     {
       id: 3,
@@ -35,10 +80,13 @@ const Marketplace = () => {
       description: 'Collection of 5 books on Indian military history',
       price: '₹800',
       category: 'books',
-      location: 'Bangalore',
+      condition: 'good',
+      location: 'Bangalore, Karnataka',
       posted: '3 days ago',
       seller: 'Lt. Verma',
-      isFavorite: false
+      contact: '+91 7654321098',
+      isFavorite: false,
+      image: '/placeholder-books.jpg'
     },
     {
       id: 4,
@@ -46,121 +94,228 @@ const Marketplace = () => {
       description: '4-person tent, used twice, includes rainfly',
       price: '₹3500',
       category: 'gear',
-      location: 'Mumbai',
+      condition: 'good',
+      location: 'Mumbai, Maharashtra',
       posted: '5 days ago',
       seller: 'Hav. Kumar',
-      isFavorite: false
+      contact: '+91 6543210987',
+      isFavorite: false,
+      image: '/placeholder-tent.jpg'
+    },
+    {
+      id: 5,
+      title: 'Olive Green Jacket',
+      description: 'Military style jacket, size XL, excellent condition',
+      price: '₹1500',
+      category: 'clothing',
+      size: 'XL',
+      condition: 'excellent',
+      location: 'Chennai, Tamil Nadu',
+      posted: '1 day ago',
+      seller: 'Col. Reddy',
+      contact: '+91 9432109876',
+      isFavorite: false,
+      image: '/placeholder-jacket.jpg'
+    },
+    {
+      id: 6,
+      title: 'Field Binoculars',
+      description: '10x42 magnification, waterproof, with case',
+      price: '₹4200',
+      category: 'gear',
+      condition: 'good',
+      location: 'Hyderabad, Telangana',
+      posted: '1 week ago',
+      seller: 'Maj. Khan',
+      contact: '+91 8321098765',
+      isFavorite: true,
+      image: '/placeholder-binoculars.jpg'
     }
-  ]
+  ];
 
   const filteredItems = items.filter(item => {
     const matchesSearch = item.title.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         item.description.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = category === 'all' || item.category === category
-    return matchesSearch && matchesCategory
-  })
+                         item.description.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesCategory = category === 'all' || item.category === category;
+    return matchesSearch && matchesCategory;
+  });
+
+  const paginatedItems = filteredItems.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
 
   const toggleFavorite = (id) => {
     // In a real app, this would update the state or make an API call
-    console.log(`Toggled favorite for item ${id}`)
-  }
+    console.log(`Toggled favorite for item ${id}`);
+  };
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Military Marketplace</h1>
-      <p className="text-gray-600">
+    <Box sx={{ p: 3 }}>
+      <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 'bold' }}>
+        Military Marketplace
+      </Typography>
+      <Typography variant="subtitle1" color="text.secondary" gutterBottom>
         Buy, sell, or donate items within the defense community
-      </p>
+      </Typography>
       
       {/* Search and Filter */}
-      <Card>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="relative">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
+      <Card sx={{ mb: 3, p: 2, borderRadius: 2, boxShadow: 2 }}>
+        <Grid container spacing={2}>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              variant="outlined"
               placeholder="Search items..."
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search color="action" />
+                  </InputAdornment>
+                ),
+              }}
             />
-          </div>
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <select
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light"
+          </Grid>
+          <Grid item xs={12} md={6}>
+            <TextField
+              fullWidth
+              select
+              variant="outlined"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <FilterList color="action" />
+                  </InputAdornment>
+                ),
+              }}
             >
-              <option value="all">All Categories</option>
-              <option value="clothing">Clothing</option>
-              <option value="gear">Gear & Equipment</option>
-              <option value="books">Books & Media</option>
-              <option value="electronics">Electronics</option>
-              <option value="furniture">Furniture</option>
-              <option value="other">Other</option>
-            </select>
-          </div>
-        </div>
+              <MenuItem value="all">All Categories</MenuItem>
+              <MenuItem value="clothing">Clothing</MenuItem>
+              <MenuItem value="gear">Gear & Equipment</MenuItem>
+              <MenuItem value="books">Books & Media</MenuItem>
+              <MenuItem value="electronics">Electronics</MenuItem>
+              <MenuItem value="furniture">Furniture</MenuItem>
+              <MenuItem value="other">Other</MenuItem>
+            </TextField>
+          </Grid>
+        </Grid>
       </Card>
       
       {/* Items List */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item) => (
-            <Card key={item.id} className="hover:shadow-lg transition-shadow">
-              <div className="relative">
-                {/* Placeholder for item image */}
-                <div className="h-48 bg-gray-200 rounded-t-lg flex items-center justify-center">
-                  <ShoppingCart className="w-10 h-10 text-gray-400" />
-                </div>
-                <button 
-                  onClick={() => toggleFavorite(item.id)}
-                  className="absolute top-3 right-3 bg-white p-2 rounded-full shadow"
+      <Grid container spacing={3}>
+        {paginatedItems.length > 0 ? (
+          paginatedItems.map((item) => (
+            <Grid item xs={12} sm={6} md={4} key={item.id}>
+              <StyledCard>
+                <CardMedia
+                  component="div"
+                  sx={{
+                    height: 200,
+                    backgroundColor: 'grey.200',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center'
+                  }}
                 >
-                  <Heart className={`w-5 h-5 ${item.isFavorite ? 'fill-red-500 text-red-500' : 'text-gray-400'}`} />
-                </button>
-              </div>
-              
-              <div className="p-4">
-                <div className="flex justify-between items-start mb-2">
-                  <h3 className="text-lg font-semibold">{item.title}</h3>
-                  <span className="font-bold text-primary">{item.price}</span>
-                </div>
-                
-                <p className="text-gray-600 text-sm mb-3">{item.description}</p>
-                
-                <div className="flex justify-between items-center text-sm text-gray-500">
-                  <span>{item.location}</span>
-                  <span>{item.posted}</span>
-                </div>
-                
-                <div className="mt-4 pt-3 border-t border-gray-200 flex justify-between">
-                  <button className="text-primary hover:underline text-sm font-medium">
+                  <ShoppingBag sx={{ fontSize: 60, color: 'grey.500' }} />
+                </CardMedia>
+                <Box sx={{ position: 'absolute', top: 8, right: 8 }}>
+                  <IconButton 
+                    onClick={() => toggleFavorite(item.id)}
+                    sx={{ backgroundColor: 'background.paper' }}
+                  >
+                    {item.isFavorite ? (
+                      <Favorite color="error" />
+                    ) : (
+                      <FavoriteBorder />
+                    )}
+                  </IconButton>
+                </Box>
+                <CardContent>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Typography variant="h6" component="h3" sx={{ fontWeight: 'medium' }}>
+                      {item.title}
+                      {item.size && ` (Size ${item.size})`}
+                    </Typography>
+                    <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
+                      {item.price}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    {item.description}
+                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Chip label={item.condition} size="small" color="primary" variant="outlined" />
+                    <Chip label={item.location.split(',')[0]} size="small" />
+                  </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    {item.posted} • {item.seller}
+                  </Typography>
+                </CardContent>
+                <Divider />
+                <CardActions sx={{ justifyContent: 'space-between', p: 2 }}>
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    onClick={() => navigate(`/marketplace/item/${item.id}`)}
+                  >
                     View Details
-                  </button>
-                  <button className="flex items-center gap-1 text-primary text-sm font-medium">
-                    <MessageSquare className="w-4 h-4" />
-                    <span>Chat</span>
-                  </button>
-                </div>
-              </div>
-            </Card>
+                  </Button>
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    startIcon={<LocationOn />}
+                    onClick={() => navigate(`/marketplace/location/${item.id}`, { state: { location: item.location } })}
+                  >
+                    View Location
+                  </Button>
+                </CardActions>
+              </StyledCard>
+            </Grid>
           ))
         ) : (
-          <Card className="md:col-span-3 text-center py-8">
-            <p className="text-gray-500">No items found matching your criteria</p>
-          </Card>
+          <Grid item xs={12}>
+            <Paper sx={{ p: 4, textAlign: 'center' }}>
+              <Typography variant="body1" color="text.secondary">
+                No items found matching your criteria
+              </Typography>
+            </Paper>
+          </Grid>
         )}
-      </div>
+      </Grid>
       
-      <div className="flex justify-center">
-        <button className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors">
+      {filteredItems.length > itemsPerPage && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <Pagination
+            count={Math.ceil(filteredItems.length / itemsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            shape="rounded"
+          />
+        </Box>
+      )}
+      
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <Button 
+          variant="contained" 
+          size="large" 
+          sx={{ px: 4 }}
+          onClick={() => navigate('/marketplace/post')}
+        >
           Post New Item
-        </button>
-      </div>
-    </div>
-  )
-}
+        </Button>
+      </Box>
+    </Box>
+  );
+};
 
-export default Marketplace
+export default Marketplace;
