@@ -9,7 +9,7 @@ const personnelSchema = new Schema(
       required: true,
       unique: true,
     },
-    email:{
+    email: {
       type: String,
       required: true,
       unique: true,
@@ -25,6 +25,19 @@ const personnelSchema = new Schema(
         required: true,
       },
       post: {
+        type: String,
+        required: true,
+      },
+      serviceNumber: {
+        type: String,
+        required: true,
+        unique: true,
+      },
+      rank: {
+        type: String,
+        required: true,
+      },
+      unitOrRegiment: {
         type: String,
         required: true,
       },
