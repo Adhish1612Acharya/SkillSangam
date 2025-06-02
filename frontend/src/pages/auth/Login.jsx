@@ -183,12 +183,12 @@ const Login = () => {
               </motion.div>
               
               <Grid container sx={{ mt: 3 }}>
-                <Grid item xs>
+                <Grid sx={{ gridColumn: 'span 12' }}>
                   <Link href="/forgot-password" variant="body2" sx={{ color: 'text.secondary' }}>
                     Forgot password?
                   </Link>
                 </Grid>
-                <Grid item>
+                <Grid>
                   <br></br>
                   <br></br>
                   <br></br>

@@ -277,7 +277,7 @@ const RegisterAdmin = () => {
               </motion.div>
               
               <Grid container justifyContent="flex-end">
-                <Grid item>
+                <Grid>
                   <Link 
                     to="/login" 
                     variant="body2"

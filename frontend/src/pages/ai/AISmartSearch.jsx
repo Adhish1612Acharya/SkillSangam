@@ -1,217 +1,331 @@
-import { useState } from 'react'
-import { Search, Filter, FileText, Shield, HeartPulse, Home, Book, Briefcase } from 'lucide-react'
-import Card from '../../components/Card'
+import { 
+  useState,
+  useEffect 
+} from 'react';
+import { 
+  Box, 
+  Typography, 
+  Grid, 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  Avatar, 
+  Button, 
+  TextField, 
+  InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
+  Divider,
+  Alert,
+  CircularProgress,
+  useTheme
+} from '@mui/material';
+import { 
+  Search, 
+  FilterList, 
+  Description, 
+  Security, 
+  MedicalServices, 
+  Home, 
+  MenuBook, 
+  Work 
+} from '@mui/icons-material';
 
 const AISmartSearch = () => {
-  const [searchQuery, setSearchQuery] = useState('')
+  const theme = useTheme();
+  const [searchQuery, setSearchQuery] = useState('');
   const [filters, setFilters] = useState({
     category: 'all',
     rank: 'all',
     status: 'all'
-  })
+  });
+  const [searchResults, setSearchResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
 
-  const searchResults = [
-    {
-      id: 1,
-      title: 'Education Grant Application Process',
-      type: 'scheme',
-      category: 'education',
-      rank: 'all',
-      status: 'serving',
-      excerpt: 'Step-by-step guide to apply for education grant for your children'
-    },
-    {
-      id: 2,
-      title: 'Pension Documents Checklist',
-      type: 'article',
-      category: 'pension',
-      rank: 'all',
-      status: 'retired',
-      excerpt: 'List of required documents for pension processing'
-    },
-    {
-      id: 3,
-      title: 'Housing Loan Subsidy - Eligibility',
-      type: 'scheme',
-      category: 'housing',
-      rank: 'havaldar',
-      status: 'serving',
-      excerpt: 'Details about housing loan subsidy for serving personnel'
+  const sampleQuestions = [
+    'Education Grant Application Process',
+    'Pension Documents Checklist',
+    'Housing Loan Subsidy - Eligibility',
+    'Healthcare benefits for veterans'
+  ];
+
+  useEffect(() => {
+    if (searchQuery.trim()) {
+      setIsSearching(true);
+      // Simulate API call
+      const timer = setTimeout(() => {
+        setSearchResults([
+          {
+            id: 1,
+            title: 'Education Grant Application Process',
+            type: 'scheme',
+            category: 'education',
+            rank: 'all',
+            status: 'serving',
+            excerpt: 'Step-by-step guide to apply for education grant for your children'
+          },
+          {
+            id: 2,
+            title: 'Pension Documents Checklist',
+            type: 'article',
+            category: 'pension',
+            rank: 'all',
+            status: 'retired',
+            excerpt: 'List of required documents for pension processing'
+          },
+          {
+            id: 3,
+            title: 'Housing Loan Subsidy - Eligibility',
+            type: 'scheme',
+            category: 'housing',
+            rank: 'havaldar',
+            status: 'serving',
+            excerpt: 'Details about housing loan subsidy for serving personnel'
+          }
+        ].filter(result => {
+          const matchesSearch = result.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
+                              result.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
+          const matchesCategory = filters.category === 'all' || result.category === filters.category;
+          const matchesRank = filters.rank === 'all' || result.rank === filters.rank || result.rank === 'all';
+          const matchesStatus = filters.status === 'all' || result.status === filters.status;
+          
+          return matchesSearch && matchesCategory && matchesRank && matchesStatus;
+        }));
+        setIsSearching(false);
+      }, 800);
+
+      return () => clearTimeout(timer);
+    } else {
+      setSearchResults([]);
     }
-  ]
-
-  const filteredResults = searchResults.filter(result => {
-    const matchesSearch = result.title.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                         result.excerpt.toLowerCase().includes(searchQuery.toLowerCase())
-    const matchesCategory = filters.category === 'all' || result.category === filters.category
-    const matchesRank = filters.rank === 'all' || result.rank === filters.rank || result.rank === 'all'
-    const matchesStatus = filters.status === 'all' || result.status === filters.status
-    
-    return matchesSearch && matchesCategory && matchesRank && matchesStatus
-  })
+  }, [searchQuery, filters]);
 
   const getCategoryIcon = (category) => {
     switch (category) {
-      case 'education': return <Book className="w-5 h-5 text-blue-500" />
-      case 'health': return <HeartPulse className="w-5 h-5 text-red-500" />
-      case 'housing': return <Home className="w-5 h-5 text-green-500" />
-      case 'pension': return <Shield className="w-5 h-5 text-purple-500" />
-      case 'employment': return <Briefcase className="w-5 h-5 text-yellow-500" />
-      default: return <FileText className="w-5 h-5 text-gray-500" />
+      case 'education': return <MenuBook color="primary" />;
+      case 'health': return <MedicalServices color="error" />;
+      case 'housing': return <Home color="success" />;
+      case 'pension': return <Security color="warning" />;
+      case 'employment': return <Work color="info" />;
+      default: return <Description color="action" />;
     }
-  }
+  };
+
+  const handleFilterChange = (name, value) => {
+    setFilters(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSampleQuestion = (question) => {
+    setSearchQuery(question);
+  };
 
   return (
-    <div className="max-w-6xl mx-auto space-y-6">
-      <div className="flex items-center gap-3">
-        <div className="bg-primary text-white p-2 rounded-full">
-          <Search className="w-6 h-6" />
-        </div>
-        <h1 className="text-2xl font-bold">Smart Search</h1>
-      </div>
+    <Box sx={{ maxWidth: 1400, mx: 'auto', p: 3 }}>
+      <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
+        <Avatar sx={{ bgcolor: 'primary.main', mr: 2 }}>
+          <Search />
+        </Avatar>
+        <Typography variant="h4" component="h1" fontWeight="bold">
+          Smart Search
+        </Typography>
+      </Box>
 
-      <p className="text-gray-600">
+      <Typography variant="body1" color="text.secondary" mb={4}>
         Find answers across schemes, documents, and resources using AI-powered search
-      </p>
+      </Typography>
 
-      <Card>
-        <div className="relative mb-4">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-          <input
-            type="text"
+      <Card sx={{ mb: 4 }}>
+        <CardContent>
+          <TextField
+            fullWidth
+            variant="outlined"
             placeholder="Search for schemes, documents, or information..."
-            className="pl-10 pr-4 py-3 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light text-lg"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search />
+                </InputAdornment>
+              ),
+            }}
+            sx={{ mb: 3 }}
           />
-        </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <select
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light"
-              value={filters.category}
-              onChange={(e) => setFilters({...filters, category: e.target.value})}
-            >
-              <option value="all">All Categories</option>
-              <option value="education">Education</option>
-              <option value="health">Health</option>
-              <option value="housing">Housing</option>
-              <option value="pension">Pension</option>
-              <option value="employment">Employment</option>
-            </select>
-          </div>
+          <Grid container spacing={2}>
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth>
+                <InputLabel>Category</InputLabel>
+                <Select
+                  value={filters.category}
+                  onChange={(e) => handleFilterChange('category', e.target.value)}
+                  label="Category"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <FilterList />
+                    </InputAdornment>
+                  }
+                >
+                  <MenuItem value="all">All Categories</MenuItem>
+                  <MenuItem value="education">Education</MenuItem>
+                  <MenuItem value="health">Health</MenuItem>
+                  <MenuItem value="housing">Housing</MenuItem>
+                  <MenuItem value="pension">Pension</MenuItem>
+                  <MenuItem value="employment">Employment</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <select
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light"
-              value={filters.rank}
-              onChange={(e) => setFilters({...filters, rank: e.target.value})}
-            >
-              <option value="all">All Ranks</option>
-              <option value="sepoy">Sepoy</option>
-              <option value="naik">Naik</option>
-              <option value="havaldar">Havaldar</option>
-              <option value="subedar">Subedar</option>
-              <option value="officer">Officer</option>
-            </select>
-          </div>
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth>
+                <InputLabel>Rank</InputLabel>
+                <Select
+                  value={filters.rank}
+                  onChange={(e) => handleFilterChange('rank', e.target.value)}
+                  label="Rank"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <FilterList />
+                    </InputAdornment>
+                  }
+                >
+                  <MenuItem value="all">All Ranks</MenuItem>
+                  <MenuItem value="sepoy">Sepoy</MenuItem>
+                  <MenuItem value="naik">Naik</MenuItem>
+                  <MenuItem value="havaldar">Havaldar</MenuItem>
+                  <MenuItem value="subedar">Subedar</MenuItem>
+                  <MenuItem value="officer">Officer</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
 
-          <div className="relative">
-            <Filter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <select
-              className="pl-10 pr-4 py-2 w-full border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-light"
-              value={filters.status}
-              onChange={(e) => setFilters({...filters, status: e.target.value})}
-            >
-              <option value="all">All Status</option>
-              <option value="serving">Serving</option>
-              <option value="retired">Retired</option>
-              <option value="veteran">Veteran</option>
-            </select>
-          </div>
-        </div>
+            <Grid item xs={12} sm={4}>
+              <FormControl fullWidth>
+                <InputLabel>Status</InputLabel>
+                <Select
+                  value={filters.status}
+                  onChange={(e) => handleFilterChange('status', e.target.value)}
+                  label="Status"
+                  startAdornment={
+                    <InputAdornment position="start">
+                      <FilterList />
+                    </InputAdornment>
+                  }
+                >
+                  <MenuItem value="all">All Status</MenuItem>
+                  <MenuItem value="serving">Serving</MenuItem>
+                  <MenuItem value="retired">Retired</MenuItem>
+                  <MenuItem value="veteran">Veteran</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+          </Grid>
+        </CardContent>
       </Card>
 
       {searchQuery && (
-        <div>
-          <h2 className="text-xl font-semibold mb-4">
-            {filteredResults.length} Results for "{searchQuery}"
-          </h2>
+        <Box>
+          <Typography variant="h5" component="h2" fontWeight="bold" mb={3}>
+            {searchResults.length} Results for "{searchQuery}"
+          </Typography>
 
-          {filteredResults.length > 0 ? (
-            <div className="space-y-4">
-              {filteredResults.map(result => (
-                <Card key={result.id} className="hover:shadow-lg transition-shadow">
-                  <div className="flex items-start gap-4">
-                    <div className="bg-gray-100 p-3 rounded-full">
-                      {getCategoryIcon(result.category)}
-                    </div>
-                    <div>
-                      <h3 className="text-lg font-semibold mb-1">{result.title}</h3>
-                      <p className="text-gray-600 mb-2">{result.excerpt}</p>
-                      <div className="flex flex-wrap gap-2">
-                        <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full capitalize">
-                          {result.category}
-                        </span>
-                        <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full capitalize">
-                          {result.rank === 'all' ? 'All ranks' : result.rank}
-                        </span>
-                        <span className="bg-gray-100 text-gray-800 text-xs px-2 py-1 rounded-full capitalize">
-                          {result.status}
-                        </span>
-                      </div>
-                    </div>
-                  </div>
-                </Card>
+          {isSearching ? (
+            <Box sx={{ display: 'flex', justifyContent: 'center', py: 6 }}>
+              <CircularProgress />
+            </Box>
+          ) : searchResults.length > 0 ? (
+            <Grid container spacing={3}>
+              {searchResults.map(result => (
+                <Grid item xs={12} key={result.id}>
+                  <Card sx={{ transition: 'box-shadow 0.3s', '&:hover': { boxShadow: 6 } }}>
+                    <CardContent>
+                      <Box sx={{ display: 'flex', alignItems: 'flex-start', gap: 3 }}>
+                        <Avatar sx={{ bgcolor: 'grey.100', mt: 1 }}>
+                          {getCategoryIcon(result.category)}
+                        </Avatar>
+                        <Box sx={{ flexGrow: 1 }}>
+                          <Typography variant="h6" component="h3" mb={1}>
+                            {result.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary" mb={2}>
+                            {result.excerpt}
+                          </Typography>
+                          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+                            <Chip 
+                              label={result.category} 
+                              size="small" 
+                              variant="outlined"
+                            />
+                            <Chip 
+                              label={result.rank === 'all' ? 'All ranks' : result.rank} 
+                              size="small" 
+                              variant="outlined"
+                            />
+                            <Chip 
+                              label={result.status} 
+                              size="small" 
+                              variant="outlined"
+                            />
+                          </Box>
+                        </Box>
+                        <Button variant="contained" size="small">
+                          View
+                        </Button>
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
               ))}
-            </div>
+            </Grid>
           ) : (
-            <Card className="text-center py-8">
-              <p className="text-gray-500">No results found matching your search criteria</p>
-              <p className="text-sm text-gray-400 mt-2">
-                Try different keywords or adjust your filters
-              </p>
+            <Card sx={{ textAlign: 'center', py: 8 }}>
+              <CardContent>
+                <Search sx={{ fontSize: 60, color: 'text.disabled', mb: 2 }} />
+                <Typography variant="h6" color="text.secondary" mb={1}>
+                  No results found
+                </Typography>
+                <Typography variant="body2" color="text.disabled">
+                  Try different keywords or adjust your filters
+                </Typography>
+              </CardContent>
             </Card>
           )}
-        </div>
+        </Box>
       )}
 
       {!searchQuery && (
-        <Card className="text-center py-8">
-          <div className="max-w-md mx-auto">
-            <Search className="w-10 h-10 text-gray-400 mx-auto mb-4" />
-            <h3 className="text-lg font-semibold mb-2">What are you looking for?</h3>
-            <p className="text-gray-600 mb-4">
+        <Card sx={{ textAlign: 'center', py: 8 }}>
+          <CardContent>
+            <Search sx={{ fontSize: 60, color: 'text.disabled', mb: 3 }} />
+            <Typography variant="h5" component="h2" mb={2}>
+              What are you looking for?
+            </Typography>
+            <Typography variant="body1" color="text.secondary" mb={4}>
               Search across all schemes, documents, and resources using keywords or filters
-            </p>
-            <div className="flex flex-wrap justify-center gap-2">
-              <button 
-                onClick={() => setSearchQuery('education grant')}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm transition-colors"
-              >
-                education grant
-              </button>
-              <button 
-                onClick={() => setSearchQuery('pension documents')}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm transition-colors"
-              >
-                pension documents
-              </button>
-              <button 
-                onClick={() => setSearchQuery('housing loan')}
-                className="bg-gray-100 hover:bg-gray-200 text-gray-800 px-3 py-1 rounded-full text-sm transition-colors"
-              >
-                housing loan
-              </button>
-            </div>
-          </div>
+            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2, flexWrap: 'wrap' }}>
+              {sampleQuestions.map((question, index) => (
+                <Button
+                  key={index}
+                  variant="outlined"
+                  onClick={() => handleSampleQuestion(question)}
+                  sx={{ textTransform: 'none' }}
+                >
+                  {question}
+                </Button>
+              ))}
+            </Box>
+          </CardContent>
         </Card>
       )}
-    </div>
-  )
-}
+    </Box>
+  );
+};
 
-export default AISmartSearch
+export default AISmartSearch;

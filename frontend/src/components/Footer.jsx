@@ -1,24 +1,59 @@
+import { Box, Container, Grid, Typography, Link as MuiLink } from '@mui/material';
+import { styled } from '@mui/material/styles';
+
+const FooterBox = styled(Box)(({ theme }) => ({
+  backgroundColor: theme.palette.primary.dark,
+  color: theme.palette.common.white,
+  padding: theme.spacing(4, 0),
+  marginTop: 'auto',
+}));
+
+const FooterLink = styled(MuiLink)(({ theme }) => ({
+  color: theme.palette.grey[300],
+  marginRight: theme.spacing(3),
+  '&:hover': {
+    color: theme.palette.secondary.light,
+    textDecoration: 'none',
+  },
+}));
+
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-6">
-      <div className="container mx-auto px-4">
-        <div className="flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0">
-            <h3 className="text-xl font-bold">Sainik Sahayak</h3>
-            <p className="text-gray-400">Supporting our armed forces and their families</p>
-          </div>
-          <div className="flex space-x-4">
-            <a href="#" className="hover:text-primary-light">Privacy Policy</a>
-            <a href="#" className="hover:text-primary-light">Terms of Service</a>
-            <a href="#" className="hover:text-primary-light">Contact Us</a>
-          </div>
-        </div>
-        <div className="mt-4 pt-4 border-t border-gray-700 text-center text-gray-400">
-          <p>© {new Date().getFullYear()} Sainik Sahayak. All rights reserved.</p>
-        </div>
-      </div>
-    </footer>
-  )
-}
+    <FooterBox component="footer">
+      <Container maxWidth="lg">
+        <Grid container spacing={4}>
+          <Grid sx={{ gridColumn: { xs: 'span 12', md: 'span 6' } }}>
+            <Typography variant="h6" gutterBottom sx={{ fontWeight: 700 }}>
+              Sainik Sahayak
+            </Typography>
+            <Typography variant="body2" color="text.secondary">
+              Supporting our armed forces and their families
+            </Typography>
+          </Grid>
+          <Grid sx={{ gridColumn: { xs: 'span 12', md: 'span 6' }, textAlign: { xs: 'left', md: 'right' } }}>
+            <Box>
+              <FooterLink href="#" variant="body2">Privacy Policy</FooterLink>
+              <FooterLink href="#" variant="body2">Terms of Service</FooterLink>
+              <FooterLink href="#" variant="body2">Contact Us</FooterLink>
+            </Box>
+          </Grid>
+          <Grid sx={{ gridColumn: 'span 12' }}>
+            <Box 
+              sx={{ 
+                borderTop: `1px solid ${theme => theme.palette.divider}`,
+                pt: 3,
+                textAlign: 'center'
+              }}
+            >
+              <Typography variant="body2" color="text.secondary">
+                © {new Date().getFullYear()} Sainik Sahayak. All rights reserved.
+              </Typography>
+            </Box>
+          </Grid>
+        </Grid>
+      </Container>
+    </FooterBox>
+  );
+};
 
-export default Footer
+export default Footer;

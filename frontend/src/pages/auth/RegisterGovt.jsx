@@ -143,7 +143,7 @@ const RegisterGovt = () => {
               </Typography>
               
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -162,7 +162,7 @@ const RegisterGovt = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -182,7 +182,7 @@ const RegisterGovt = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -213,7 +213,7 @@ const RegisterGovt = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -242,7 +242,7 @@ const RegisterGovt = () => {
               </Typography>
               
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <FormControl fullWidth>
                     <InputLabel id="department-label">Department</InputLabel>
                     <Select
@@ -262,7 +262,7 @@ const RegisterGovt = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -274,7 +274,7 @@ const RegisterGovt = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid sx={{ gridColumn: 'span 12' }}>
                   <TextField
                     required
                     fullWidth
@@ -294,7 +294,7 @@ const RegisterGovt = () => {
                     }}
                   />
                 </Grid>
-                <Grid item xs={12}>
+                <Grid sx={{ gridColumn: 'span 12' }}>
                   <FormControlLabel
                     control={
                       <Checkbox
@@ -333,7 +333,7 @@ const RegisterGovt = () => {
               </motion.div>
               
               <Grid container justifyContent="flex-end">
-                <Grid item>
+                <Grid>
                   <Link 
                     to="/login" 
                     variant="body2"

@@ -1,11 +1,60 @@
-import { Phone, MapPin, Users, Shield, HeartPulse } from 'lucide-react'
-import Card from '../../components/Card'
+import React from 'react';
+import { 
+  Phone, 
+  LocationOn, 
+  People, 
+  Security, 
+  LocalHospital,
+  ExpandMore
+} from '@mui/icons-material';
+import { 
+  Box, 
+  Typography, 
+  Card, 
+  CardContent, 
+  CardHeader, 
+  Avatar, 
+  Grid, 
+  List, 
+  ListItem, 
+  ListItemAvatar, 
+  ListItemText, 
+  IconButton, 
+  Collapse,
+  Divider,
+  useTheme
+} from '@mui/material';
+import { styled, keyframes } from '@mui/system';
+import { motion } from 'framer-motion';
+
+const pulseAnimation = keyframes`
+  0% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+  100% { transform: scale(1); }
+`;
+
+const StyledCard = styled(Card)(({ theme }) => ({
+  transition: 'transform 0.3s, box-shadow 0.3s',
+  '&:hover': {
+    transform: 'translateY(-5px)',
+    boxShadow: theme.shadows[8],
+  },
+  borderRadius: '12px',
+}));
 
 const EmergencyContacts = () => {
+  const theme = useTheme();
+  const [expandedCategory, setExpandedCategory] = React.useState(null);
+
+  const handleExpandClick = (index) => {
+    setExpandedCategory(expandedCategory === index ? null : index);
+  };
+
   const contactCategories = [
     {
       title: 'Immediate Assistance',
-      icon: <Phone className="w-5 h-5" />,
+      icon: <Phone />,
+      color: theme.palette.error.main,
       contacts: [
         { name: 'Military Police', number: '1907' },
         { name: 'Medical Emergency', number: '1908' },
@@ -14,7 +63,8 @@ const EmergencyContacts = () => {
     },
     {
       title: 'Unit Contacts',
-      icon: <Shield className="w-5 h-5" />,
+      icon: <Security />,
+      color: theme.palette.primary.main,
       contacts: [
         { name: 'Unit HQ', number: '011-25678901' },
         { name: 'CO Office', number: '011-25678902' },
@@ -23,7 +73,8 @@ const EmergencyContacts = () => {
     },
     {
       title: 'Medical Facilities',
-      icon: <HeartPulse className="w-5 h-5" />,
+      icon: <LocalHospital />,
+      color: theme.palette.success.main,
       contacts: [
         { name: 'Base Hospital', number: '011-25678910' },
         { name: 'Emergency Ward', number: '011-25678911' },
@@ -32,54 +83,119 @@ const EmergencyContacts = () => {
     },
     {
       title: 'Family Support',
-      icon: <Users className="w-5 h-5" />,
+      icon: <People />,
+      color: theme.palette.warning.main,
       contacts: [
         { name: 'AWWA Helpline', number: '011-25678920' },
         { name: 'Canteen Services', number: '011-25678921' },
         { name: 'School Liaison', number: '011-25678922' }
       ]
     }
-  ]
+  ];
 
   return (
-    <div className="space-y-6">
-      <h1 className="text-2xl font-bold">Emergency Contacts</h1>
-      
-      <Card>
-        <div className="flex items-center gap-3 p-3 bg-blue-50 rounded-lg">
-          <MapPin className="w-5 h-5 text-blue-600" />
-          <div>
-            <h3 className="font-medium text-blue-800">Current Location: </h3>
-            <p className="text-sm text-blue-600">Enable location services to show your nearest facilities</p>
-          </div>
-        </div>
-      </Card>
-      
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {contactCategories.map((category, index) => (
-          <Card key={index}>
-            <h2 className="text-lg font-semibold mb-4 flex items-center gap-2">
-              {category.icon}
-              {category.title}
-            </h2>
-            <div className="space-y-3">
-              {category.contacts.map((contact, idx) => (
-                <div key={idx} className="flex justify-between items-center p-3 bg-gray-50 rounded-lg">
-                  <span>{contact.name}</span>
-                  <a 
-                    href={`tel:${contact.number.replace(/[^0-9]/g, '')}`}
-                    className="text-primary hover:underline"
-                  >
-                    {contact.number}
-                  </a>
-                </div>
-              ))}
-            </div>
-          </Card>
-        ))}
-      </div>
-    </div>
-  )
-}
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      transition={{ duration: 0.5 }}
+    >
+      <Box sx={{ p: 3 }}>
+        <Typography variant="h4" component="h1" gutterBottom sx={{ fontWeight: 700, mb: 4 }}>
+          Emergency Contacts
+        </Typography>
+        
+        <StyledCard sx={{ mb: 4 }}>
+          <CardContent sx={{ display: 'flex', alignItems: 'center', p: 3 }}>
+            <Avatar sx={{ bgcolor: theme.palette.info.main, mr: 2 }}>
+              <LocationOn />
+            </Avatar>
+            <Box>
+              <Typography variant="h6" color="primary">
+                Current Location
+              </Typography>
+              <Typography variant="body2" color="text.secondary">
+                Enable location services to show your nearest facilities
+              </Typography>
+            </Box>
+          </CardContent>
+        </StyledCard>
+        
+        <Grid container spacing={3}>
+          {contactCategories.map((category, index) => (
+            <Grid item xs={12} sm={6} key={index}>
+              <StyledCard>
+                <CardHeader
+                  avatar={
+                    <Avatar sx={{ bgcolor: category.color }}>
+                      {category.icon}
+                    </Avatar>
+                  }
+                  action={
+                    <IconButton
+                      onClick={() => handleExpandClick(index)}
+                      aria-expanded={expandedCategory === index}
+                      aria-label="show more"
+                    >
+                      <ExpandMore sx={{ 
+                        transform: expandedCategory === index ? 'rotate(180deg)' : 'rotate(0deg)',
+                        transition: 'transform 0.3s'
+                      }} />
+                    </IconButton>
+                  }
+                  title={
+                    <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                      {category.title}
+                    </Typography>
+                  }
+                  sx={{
+                    '& .MuiCardHeader-action': {
+                      alignSelf: 'center',
+                      m: 0
+                    }
+                  }}
+                />
+                <Collapse in={expandedCategory === index} timeout="auto" unmountOnExit>
+                  <Divider />
+                  <CardContent sx={{ pt: 0 }}>
+                    <List dense>
+                      {category.contacts.map((contact, idx) => (
+                        <ListItem 
+                          key={idx} 
+                          sx={{ 
+                            '&:hover': { 
+                              bgcolor: 'action.hover',
+                              borderRadius: 1
+                            },
+                            animation: `${pulseAnimation} 2s infinite`,
+                            animationDelay: `${idx * 0.1}s`
+                          }}
+                        >
+                          <ListItemAvatar>
+                            <Avatar sx={{ bgcolor: 'background.default', color: category.color }}>
+                              <Phone fontSize="small" />
+                            </Avatar>
+                          </ListItemAvatar>
+                          <ListItemText
+                            primary={contact.name}
+                            secondary={contact.number}
+                          />
+                          <Box component="a" href={`tel:${contact.number.replace(/[^0-9]/g, '')}`}>
+                            <IconButton color="primary">
+                              <Phone />
+                            </IconButton>
+                          </Box>
+                        </ListItem>
+                      ))}
+                    </List>
+                  </CardContent>
+                </Collapse>
+              </StyledCard>
+            </Grid>
+          ))}
+        </Grid>
+      </Box>
+    </motion.div>
+  );
+};
 
-export default EmergencyContacts
+export default EmergencyContacts;

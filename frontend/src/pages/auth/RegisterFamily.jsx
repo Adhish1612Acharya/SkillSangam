@@ -164,7 +164,7 @@ const RegisterFamily = () => {
               </Typography>
               
               <Grid container spacing={2} alignItems="flex-end">
-                <Grid item xs={12} sm={8}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 8' } }}>
                   <TextField
                     fullWidth
                     id="familyCode"
@@ -177,7 +177,7 @@ const RegisterFamily = () => {
                     disabled={!!soldierInfo}
                   />
                 </Grid>
-                <Grid item xs={12} sm={4}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 4' } }}>
                   <Button
                     fullWidth
                     variant={soldierInfo ? "outlined" : "contained"}
@@ -200,7 +200,7 @@ const RegisterFamily = () => {
                       Soldier Information
                     </Typography>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                         <Typography variant="body2" color="text.secondary">
                           Soldier Name
                         </Typography>
@@ -208,7 +208,7 @@ const RegisterFamily = () => {
                           {soldierInfo.name}
                         </Typography>
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                         <Typography variant="body2" color="text.secondary">
                           Service Number
                         </Typography>
@@ -216,7 +216,7 @@ const RegisterFamily = () => {
                           {soldierInfo.serviceNumber}
                         </Typography>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid sx={{ gridColumn: 'span 12' }}>
                         <Typography variant="body2" color="text.secondary">
                           Unit/Regiment
                         </Typography>
@@ -236,7 +236,7 @@ const RegisterFamily = () => {
               </Typography>
               
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -248,7 +248,7 @@ const RegisterFamily = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <FormControl fullWidth>
                     <InputLabel id="relation-label">Relation to Soldier</InputLabel>
                     <Select
@@ -267,7 +267,7 @@ const RegisterFamily = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -280,7 +280,7 @@ const RegisterFamily = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -293,7 +293,7 @@ const RegisterFamily = () => {
                     placeholder="Aadhar, Passport, etc."
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -306,7 +306,7 @@ const RegisterFamily = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -342,7 +342,7 @@ const RegisterFamily = () => {
               </motion.div>
               
               <Grid container justifyContent="flex-end">
-                <Grid item>
+                <Grid>
                   <Link 
                     to="/login" 
                     variant="body2"
