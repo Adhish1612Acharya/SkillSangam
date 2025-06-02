@@ -58,7 +58,7 @@ const AppRoutes = () => {
       />
 
       {/* Protected Routes */}
-      <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}>
+      {/* <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}> */}
         {/* Common Routes */}
         <Route path="schemes" element={<SchemeList />} />
 
@@ -82,13 +82,13 @@ const AppRoutes = () => {
           <Route path="/ai/chatbot" element={<Chatbot />} />
           <Route path="/ai/recommender" element={<AIBenefitRecommender />} />
         </Route>
-        <Route element={<OfficerProtectedRoute />}>
+        {/* <Route element={<OfficerProtectedRoute />}> */}
           <Route path="/govt-dashboard" element={<GovtDashboard />} />
-        </Route>
-        <Route element={<AdminProtectedRoute />}>
+        {/* </Route> */}
+        {/* <Route element={<AdminProtectedRoute />}> */}
           <Route path="/admin-dashboard" element={<AdminDashboard />} />
-        </Route>
-      </Route>
+        {/* </Route> */}
+      {/* </Route> */}
 
       {/* 404 */}
       <Route path="*" element={<NotFound />} />
