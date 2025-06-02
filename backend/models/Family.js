@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import { Schema } from "mongoose";
 import passportLocalMongoose from "passport-local-mongoose";
 
-const personnelSchema = new Schema(
+const familySchema = new Schema(
   {
     username: {
       type: String,
@@ -57,7 +57,7 @@ const personnelSchema = new Schema(
 );
 
 // Attach Passport-Local Mongoose Plugin
-personnelSchema.plugin(passportLocalMongoose);
+familySchema.plugin(passportLocalMongoose);
 
-const Personnel = mongoose.model("Personnel", personnelSchema);
-export default Personnel;
+const Family=mongoose.model("Family", familySchema);
+export default Family;
