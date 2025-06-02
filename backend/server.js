@@ -20,6 +20,9 @@ import Admin from "./models/Admin.js";
 import Family from "./models/Family.js";
 import Officer from "./models/Officer.js";
 import Personnel from "./models/Personnel.js";
+import familyRoutes from "./routes/family.js";
+import adminRoutes from "./routes/admin.js";
+import officerRoutes from "./routes/officer.js";
 // dotenv.config();
 const app = express();
 //socket connection
@@ -43,7 +46,7 @@ main()
   });
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/ayurpath");
+  await mongoose.connect("mongodb://127.0.0.1:27017/skillsangam");
 }
 
 const store = MongoStore.create({
@@ -166,48 +169,27 @@ app.get("/api/user/data", (req, res) => {
   });
 });
 
-// app.use("/api/auth/expert", expertEmailPasswordAuth);
-// app.use("/api/auth/user", userEmailPasswordAuth);
-// app.use("/api/posts", postRoute);
-// app.use("/api/success-stories", successStoryRoute);
-// app.use("/api/routines", routinesRoute);
-// app.use("/api/experts", expertRoute);
-// app.use("/api/user", userRoutes);
-// app.use("/api/prakrathi", prakrathiRoutes);
-// app.use("/api/healthChallenge", healthChallenge);
-// app.use("/api/chat", chatRoutes);
-
-// app.use("/auth/google", expertGoogleAuth);
-// app.use("/api/auth/google/user", userGoogleAuth);
-
-// app.get("/check", (req, res) => {
-//   console.log("Logged IN : ", req.isAuthenticated());
-//   res.json("LoggedIn : ");
-// });
-
-// app.get("/debug-session", (req, res) => {
-//   console.log(" Session Details:", req.session);
-//   console.log(" Authenticated User:", req.user);
-//   res.json({ session: req.session, user: req.user });
-// });
+app.use("/api/auth/family", familyRoutes);
+app.use("/api/auth/admin", adminRoutes);
+app.use("/api/auth/officer", officerRoutes);
 
 // -------------------Deployment------------------//
 
-// const __dirname1 = path.resolve();
+const __dirname1 = path.resolve();
 
-// if (process.env.NODE_ENV === "local") {
-//   app.use(express.static(path.join(__dirname1, "../frontend/dist")));
+if (process.env.NODE_ENV === "local") {
+  app.use(express.static(path.join(__dirname1, "../frontend/dist")));
 
-//   app.get("*", (req, res) => {
-//     res.sendFile(
-//       path.join(__dirname1, "../", "frontend", "dist", "index.html")
-//     );
-//   });
-// } else {
-//   app.get("/", (req, res) => {
-//     res.json("Success");
-//   });
-// }
+  app.get("*", (req, res) => {
+    res.sendFile(
+      path.join(__dirname1, "../", "frontend", "dist", "index.html")
+    );
+  });
+} else {
+  app.get("/", (req, res) => {
+    res.json("Success");
+  });
+}
 
 // -------------------Deployment------------------//
 

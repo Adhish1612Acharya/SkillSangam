@@ -9,6 +9,12 @@ const personnelSchema = new Schema(
       required: true,
       unique: true,
     },
+    email:{
+      type: String,
+      required: true,
+      unique: true,
+      match: /.+\@.+\..+/,
+    },
     profile: {
       joinDate: {
         type: Date,
