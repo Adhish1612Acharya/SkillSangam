@@ -35,11 +35,11 @@ const familySchema = new Schema(
         type: String,
         required: true,
       },
-      relationship: {
-        type: String,
-        required: true,
-        enum: ["self", "spouse", "child", "parent", "sibling", "other"],
-      },
+      // relationship: {
+      //   type: String,
+      //   required: true,
+      //   enum: ["self", "spouse", "child", "parent", "sibling", "other"],
+      // },
     },
     familyCode: {
       type: String,
@@ -59,5 +59,7 @@ const familySchema = new Schema(
 // Attach Passport-Local Mongoose Plugin
 familySchema.plugin(passportLocalMongoose);
 
-const Family=mongoose.model("Family", familySchema);
+
+const Family = mongoose.model("Family", familySchema);
+
 export default Family;

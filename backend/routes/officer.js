@@ -20,6 +20,6 @@ router.post(
 router.get("/failureLogin", failureLogin);
 
 // Officer Logout
-router.post("/logout", logout);
+router.get("/logout", logout);
 
 export default router;

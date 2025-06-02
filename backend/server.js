@@ -1,29 +1,40 @@
-// import { config as dotEnvConfig } from "dotenv";
-// if (process.env.NODE_ENV !== "production") {
-//   dotEnvConfig();
-// }
+import { config as dotEnvConfig } from "dotenv";
+if (process.env.NODE_ENV !== "production") {
+  dotEnvConfig();
+}
 import express from "express";
 import cors from "cors";
 import mongoose from "mongoose";
 import session from "express-session";
 import bodyParser from "body-parser";
+
+// import { Server } from 'socket.io';
+// import http from "http";
+// import { Server } from "socket.io";
+
 // import errorHandler from "./utils/errorHandler.js";
 // import { Server } from 'socket.io';
 import http from "http";
 import { Server } from "socket.io";
+
 // import initSocket from "./socket.js";
 import { Strategy as localStrategy } from "passport-local";
 import passport from "passport";
 import MongoStore from "connect-mongo";
 
 import Admin from "./models/Admin.js";
+import errorHandler from "./utils/errorHandler.js";
+
 import Family from "./models/Family.js";
 import Officer from "./models/Officer.js";
 import Personnel from "./models/Personnel.js";
 import familyRoutes from "./routes/family.js";
 import adminRoutes from "./routes/admin.js";
 import officerRoutes from "./routes/officer.js";
-// dotenv.config();
+import personnelRoutes from "./routes/personnel.js";
+import path from "path";
+import expressError from "./utils/expressError.js";
+
 const app = express();
 //socket connection
 // const server = http.createServer(app);
@@ -50,7 +61,7 @@ async function main() {
 }
 
 const store = MongoStore.create({
-  mongoUrl: "mongodb://127.0.0.1:27017/ayurpath",
+  mongoUrl: "mongodb://127.0.0.1:27017/skillsangam",
   crypto: {
     secret: process.env.SECRET || "My secret code",
   },
@@ -85,16 +96,16 @@ const corsOptions = {
   methods: ["GET", "PUT", "PATCH", "POST", "DELETE"],
 };
 
-app.use(cors(corsOptions));
+// app.options("/", cors(corsOptions));
 
-app.options("*", cors(corsOptions));
+app.use(cors(corsOptions));
 
 app.use(session(sessionOptions));
 
 app.use(passport.initialize());
 app.use(passport.session());
 
-// LocalStrategy for Admin
+//LocalStrategy for Admin
 passport.use("admin", new localStrategy(Admin.authenticate()));
 // LocalStrategy for Officer
 passport.use("officer", new localStrategy(Officer.authenticate()));
@@ -151,10 +162,16 @@ passport.deserializeUser((obj, done) => {
   }
 });
 
+// Register routes
+app.use("/api/auth/family", familyRoutes);
+app.use("/api/auth/admin", adminRoutes);
+app.use("/api/auth/officer", officerRoutes);
+app.use("/api/auth/personnel", personnelRoutes);
+
+// Auth check route for frontend protected routes
 app.get("/api/auth/check", (req, res) => {
   const loggedIn = req.isAuthenticated();
   const userRole = req.user?.role || null;
-
   res.status(200).json({
     success: true,
     message: "Auth Status",
@@ -162,16 +179,6 @@ app.get("/api/auth/check", (req, res) => {
     userRole,
   });
 });
-
-app.get("/api/user/data", (req, res) => {
-  res.status(200).json({
-    userEmail: req.user.email,
-  });
-});
-
-app.use("/api/auth/family", familyRoutes);
-app.use("/api/auth/admin", adminRoutes);
-app.use("/api/auth/officer", officerRoutes);
 
 // -------------------Deployment------------------//
 
@@ -193,6 +200,7 @@ if (process.env.NODE_ENV === "local") {
 
 // -------------------Deployment------------------//
 
+
 // app.get("/login", (req, res) => {
 //   const buildPath = path.join(__dirname1, "../frontend/dist");
 //   res.sendFile(path.join(buildPath, "index.html"));
@@ -211,17 +219,11 @@ const port = process.env.PORT || 3000;
 //   socket.on('disconnect', () => console.log(`Disconnected: ${socket.user._id}`));
 
 // });
-// 404 handler
-
-app.all("*", (req, res, next) => {
-  next(new ExpressError("Page Not Found", 404));
-});
 
 // Generic error handler
-app.use((err, req, res, next) => {
-  const { statusCode = 500, message = "Something went wrong" } = err;
-  res.status(statusCode).json({ error: message });
-});
+app.use(errorHandler);
+
+const port = process.env.PORT || 3000;
 
 app.listen(port, () => {
   console.log("Server listening on port: ", port);
