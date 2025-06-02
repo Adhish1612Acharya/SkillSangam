@@ -1,5 +1,5 @@
 import express from "express";
-import Scheme from "../models/Schema/Schemes.js";
+import Scheme from "../models/Schemes/Schemes.js";
 import wrapAsync from "../utils/wrapAsync.js";
 import ExpressError from "../utils/expressError.js";
 
