@@ -203,6 +203,19 @@ const port = process.env.PORT || 3000;
 //   socket.on('disconnect', () => console.log(`Disconnected: ${socket.user._id}`));
 
 // });
+// 404 handler
+
+
+app.all("*", (req, res, next) => {
+  next(new ExpressError("Page Not Found", 404));
+});
+
+// Generic error handler
+app.use((err, req, res, next) => {
+  const { statusCode = 500, message = "Something went wrong" } = err;
+  res.status(statusCode).json({ error: message });
+});
+
 
 app.listen(port, () => {
   console.log("Server listening on port: ", port);

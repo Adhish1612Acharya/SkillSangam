@@ -20,10 +20,16 @@ const schemeSchema = new mongoose.Schema({
       }
     }
   ],
-  details: {
-    type: String,
-    required: true,
+  details: [
+  {
+  feild:{
+    type:String
   },
+  feildType:{
+    type:String
+  }  
+  }
+  ],
   owner: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Official',
