@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import {
   ArrowBack,
@@ -6,7 +6,8 @@ import {
   CloudUpload,
   CheckCircle,
   DeleteOutline,
-  InfoOutlined
+  InfoOutlined,
+  Description
 } from '@mui/icons-material'
 import {
   Box,
@@ -30,10 +31,183 @@ import {
   Slide,
   Zoom,
   useTheme,
-  styled
+  styled,
+  Select,
+  MenuItem,
+  InputLabel,
+  FormControl,
+  RadioGroup,
+  Radio,
+  FormLabel
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
+import dayjs from 'dayjs'
+import { DatePicker } from '@mui/x-date-pickers/DatePicker'
 
+// Mock API function to fetch scheme form configuration
+const fetchSchemeFormConfig = async (schemeId) => {
+  // Simulate API call delay
+  await new Promise(resolve => setTimeout(resolve, 500))
+  
+  // Mock data - in a real app, this would come from your backend
+  const schemeForms = {
+    'education-grant': {
+      id: 'education-grant',
+      title: 'Education Grant for Children',
+      description: 'Financial assistance for education of soldiers children up to ₹50,000 per child annually',
+      formSections: [
+        {
+          title: 'Service Details',
+          fields: [
+            {
+              name: 'serviceNumber',
+              label: 'Service Number',
+              type: 'text',
+              required: true,
+              grid: { xs: 12, md: 4 }
+            },
+            {
+              name: 'rank',
+              label: 'Rank',
+              type: 'select',
+              options: [
+                'Sepoy', 'Naik', 'Havaldar', 'Subedar',
+                'Lieutenant', 'Captain', 'Major', 'Colonel'
+              ],
+              required: true,
+              grid: { xs: 12, md: 4 }
+            },
+            {
+              name: 'unit',
+              label: 'Unit/Regiment',
+              type: 'text',
+              required: true,
+              grid: { xs: 12, md: 4 }
+            }
+          ]
+        },
+        {
+          title: 'Education Details',
+          fields: [
+            {
+              name: 'childName',
+              label: 'Child Name',
+              type: 'text',
+              required: true,
+              grid: { xs: 12, md: 6 }
+            },
+            {
+              name: 'institutionName',
+              label: 'Institution Name',
+              type: 'text',
+              required: true,
+              grid: { xs: 12, md: 6 }
+            },
+            {
+              name: 'course',
+              label: 'Course/Class',
+              type: 'text',
+              required: true,
+              grid: { xs: 12, md: 6 }
+            },
+            {
+              name: 'academicYear',
+              label: 'Academic Year',
+              type: 'text',
+              required: true,
+              grid: { xs: 12, md: 6 }
+            },
+            {
+              name: 'amountRequested',
+              label: 'Amount Requested',
+              type: 'number',
+              required: true,
+              inputProps: { min: 0, max: 50000, step: 1000 },
+              grid: { xs: 12, md: 6 }
+            }
+          ]
+        }
+      ],
+      requiredDocuments: [
+        'Service certificate copy',
+        'Child birth certificate',
+        'School/College admission proof',
+        'Fee receipt of current academic year',
+      ]
+    },
+    'housing-loan': {
+      id: 'housing-loan',
+      title: 'Housing Loan Subsidy',
+      description: 'Interest subsidy on home loans for serving and retired personnel',
+      formSections: [
+        {
+          title: 'Applicant Details',
+          fields: [
+            {
+              name: 'serviceNumber',
+              label: 'Service Number',
+              type: 'text',
+              required: true,
+              grid: { xs: 12, md: 6 }
+            },
+            {
+              name: 'applicantType',
+              label: 'Applicant Type',
+              type: 'radio',
+              options: ['Serving', 'Retired'],
+              required: true,
+              grid: { xs: 12, md: 6 }
+            }
+          ]
+        },
+        {
+          title: 'Property Details',
+          fields: [
+            {
+              name: 'propertyAddress',
+              label: 'Property Address',
+              type: 'text',
+              required: true,
+              grid: { xs: 12 }
+            },
+            {
+              name: 'propertyType',
+              label: 'Property Type',
+              type: 'select',
+              options: ['Flat', 'House', 'Plot'],
+              required: true,
+              grid: { xs: 12, md: 6 }
+            },
+            {
+              name: 'loanAmount',
+              label: 'Loan Amount (₹)',
+              type: 'number',
+              required: true,
+              grid: { xs: 12, md: 6 }
+            },
+            {
+              name: 'purchaseDate',
+              label: 'Purchase Date',
+              type: 'date',
+              required: true,
+              grid: { xs: 12, md: 6 }
+            }
+          ]
+        }
+      ],
+      requiredDocuments: [
+        'Service certificate',
+        'Property documents',
+        'Loan sanction letter',
+        'Bank account details'
+      ]
+    }
+  }
+  
+  return schemeForms[schemeId] || schemeForms['education-grant']
+}
+
+// Styled components
 const AnimatedCard = styled(Card)(({ theme }) => ({
   transition: theme.transitions.create(['transform', 'box-shadow'], {
     duration: theme.transitions.duration.standard,
@@ -64,39 +238,53 @@ const SchemeApply = () => {
   const navigate = useNavigate()
   const theme = useTheme()
   
-  const scheme = {
-    id: id,
-    title: 'Education Grant for Children',
-    description: 'Financial assistance for education of soldiers children up to ₹50,000 per child annually',
-    requiredDocuments: [
-      'Service certificate copy',
-      'Child birth certificate',
-      'School/College admission proof',
-      'Fee receipt of current academic year',
-    ],
-  }
-  
-  const [formData, setFormData] = useState({
-    serviceNumber: '',
-    rank: '',
-    unit: '',
-    childName: '',
-    institutionName: '',
-    course: '',
-    academicYear: '',
-    amountRequested: '',
-    documents: [],
-    termsAgreed: false,
-  })
-  
+  const [scheme, setScheme] = useState(null)
+  const [formData, setFormData] = useState({})
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [submitSuccess, setSubmitSuccess] = useState(false)
+  const [loading, setLoading] = useState(true)
+
+  // Fetch scheme form configuration
+  useEffect(() => {
+    const loadScheme = async () => {
+      try {
+        const schemeData = await fetchSchemeFormConfig(id)
+        setScheme(schemeData)
+        
+        // Initialize form data with empty values based on the scheme fields
+        const initialFormData = {}
+        schemeData.formSections.forEach(section => {
+          section.fields.forEach(field => {
+            initialFormData[field.name] = field.type === 'date' ? null : ''
+          })
+        })
+        initialFormData.documents = []
+        initialFormData.termsAgreed = false
+        
+        setFormData(initialFormData)
+      } catch (error) {
+        console.error('Error loading scheme:', error)
+        navigate('/schemes', { replace: true })
+      } finally {
+        setLoading(false)
+      }
+    }
+    
+    loadScheme()
+  }, [id, navigate])
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target
     setFormData(prev => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value
+    }))
+  }
+
+  const handleDateChange = (name, value) => {
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
     }))
   }
 
@@ -119,10 +307,20 @@ const SchemeApply = () => {
     e.preventDefault()
     setIsSubmitting(true)
     
+    // Simulate API submission
     setTimeout(() => {
+      console.log('Form submitted:', formData)
       setIsSubmitting(false)
       setSubmitSuccess(true)
     }, 1500)
+  }
+
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '80vh' }}>
+        <Typography variant="h6">Loading application form...</Typography>
+      </Box>
+    )
   }
 
   if (submitSuccess) {
@@ -165,6 +363,96 @@ const SchemeApply = () => {
     )
   }
 
+  const renderFormField = (field) => {
+    switch (field.type) {
+      case 'text':
+        return (
+          <TextField
+            fullWidth
+            label={field.label}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleChange}
+            required={field.required}
+            variant="outlined"
+            InputProps={field.inputProps}
+          />
+        )
+      case 'number':
+        return (
+          <TextField
+            fullWidth
+            label={field.label}
+            name={field.name}
+            type="number"
+            value={formData[field.name] || ''}
+            onChange={handleChange}
+            required={field.required}
+            variant="outlined"
+            inputProps={field.inputProps}
+          />
+        )
+      case 'select':
+        return (
+          <FormControl fullWidth required={field.required}>
+            <InputLabel>{field.label}</InputLabel>
+            <Select
+              label={field.label}
+              name={field.name}
+              value={formData[field.name] || ''}
+              onChange={handleChange}
+            >
+              {field.options.map((option, index) => (
+                <MenuItem key={index} value={option}>{option}</MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+        )
+      case 'radio':
+        return (
+          <FormControl component="fieldset" fullWidth>
+            <FormLabel component="legend">{field.label}</FormLabel>
+            <RadioGroup
+              row
+              name={field.name}
+              value={formData[field.name] || ''}
+              onChange={handleChange}
+            >
+              {field.options.map((option, index) => (
+                <FormControlLabel 
+                  key={index} 
+                  value={option} 
+                  control={<Radio />} 
+                  label={option} 
+                />
+              ))}
+            </RadioGroup>
+          </FormControl>
+        )
+      case 'date':
+        return (
+          <DatePicker
+            label={field.label}
+            value={formData[field.name] ? dayjs(formData[field.name]) : null}
+            onChange={(newValue) => handleDateChange(field.name, newValue)}
+            slotProps={{ textField: { fullWidth: true, required: field.required } }}
+          />
+        )
+      default:
+        return (
+          <TextField
+            fullWidth
+            label={field.label}
+            name={field.name}
+            value={formData[field.name] || ''}
+            onChange={handleChange}
+            required={field.required}
+            variant="outlined"
+          />
+        )
+    }
+  }
+
   return (
     <Box sx={{ maxWidth: 'lg', mx: 'auto', px: { xs: 2, md: 4 }, py: 4 }}>
       <Slide direction="right" in={true}>
@@ -192,132 +480,29 @@ const SchemeApply = () => {
         <AnimatedCard>
           <CardContent>
             <form onSubmit={handleSubmit}>
-              {/* Service Details */}
-              <Box sx={{ mb: 6 }}>
-                <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 3 }}>
-                  Service Details
-                </Typography>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      fullWidth
-                      label="Service Number"
-                      id="serviceNumber"
-                      name="serviceNumber"
-                      value={formData.serviceNumber}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                    />
+              {/* Dynamic Form Sections */}
+              {scheme.formSections.map((section, sectionIndex) => (
+                <Box key={sectionIndex} sx={{ mb: 6 }}>
+                  <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 3 }}>
+                    {section.title}
+                  </Typography>
+                  <Grid container spacing={3} columns={12}>
+                    {section.fields.map((field, fieldIndex) => (
+                      <Box 
+                        key={fieldIndex}
+                        sx={{ gridColumn: `span ${field.grid?.md || 12}` }}
+                        // Optionally, you can use gridRow if needed
+                      >
+                        {renderFormField(field)}
+                      </Box>
+                    ))}
                   </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      fullWidth
-                      label="Rank"
-                      id="rank"
-                      name="rank"
-                      value={formData.rank}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={4}>
-                    <TextField
-                      fullWidth
-                      label="Unit/Regiment"
-                      id="unit"
-                      name="unit"
-                      value={formData.unit}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
-              
-              <Divider sx={{ my: 4 }} />
-              
-              {/* Scheme Specific Details */}
-              <Box sx={{ mb: 6 }}>
-                <Typography variant="h5" component="h3" sx={{ fontWeight: 600, mb: 3 }}>
-                  Education Details
-                </Typography>
-                <Grid container spacing={3}>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Child Name"
-                      id="childName"
-                      name="childName"
-                      value={formData.childName}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Institution Name"
-                      id="institutionName"
-                      name="institutionName"
-                      value={formData.institutionName}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Course/Class"
-                      id="course"
-                      name="course"
-                      value={formData.course}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Academic Year"
-                      id="academicYear"
-                      name="academicYear"
-                      value={formData.academicYear}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                    />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <TextField
-                      fullWidth
-                      label="Amount Requested (₹)"
-                      id="amountRequested"
-                      name="amountRequested"
-                      type="number"
-                      value={formData.amountRequested}
-                      onChange={handleChange}
-                      required
-                      variant="outlined"
-                      inputProps={{
-                        min: "0",
-                        max: "50000",
-                        step: "1000"
-                      }}
-                      InputProps={{
-                        startAdornment: (
-                          <Typography color="text.secondary" sx={{ mr: 1 }}>₹</Typography>
-                        ),
-                      }}
-                    />
-                  </Grid>
-                </Grid>
-              </Box>
+                  
+                  {sectionIndex < scheme.formSections.length - 1 && (
+                    <Divider sx={{ my: 4 }} />
+                  )}
+                </Box>
+              ))}
               
               <Divider sx={{ my: 4 }} />
               
@@ -345,7 +530,7 @@ const SchemeApply = () => {
                   {scheme.requiredDocuments.map((doc, index) => (
                     <ListItem key={index} sx={{ px: 0 }}>
                       <ListItemIcon sx={{ minWidth: 32 }}>
-                        <InfoOutlined color="primary" fontSize="small" />
+                        <Description color="primary" fontSize="small" />
                       </ListItemIcon>
                       <ListItemText primary={doc} />
                     </ListItem>
@@ -383,7 +568,7 @@ const SchemeApply = () => {
                   </FileUploadArea>
                 </label>
                 
-                {formData.documents.length > 0 && (
+                {formData.documents?.length > 0 && (
                   <Box sx={{ mt: 3 }}>
                     <Typography variant="subtitle2" gutterBottom>
                       Selected Files:
@@ -426,9 +611,8 @@ const SchemeApply = () => {
                 <FormControlLabel
                   control={
                     <Checkbox
-                      id="termsAgreed"
                       name="termsAgreed"
-                      checked={formData.termsAgreed}
+                      checked={formData.termsAgreed || false}
                       onChange={handleChange}
                       required
                       color="primary"

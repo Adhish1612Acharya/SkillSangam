@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { ArrowLeft, Upload, X } from 'lucide-react';
 import {
   Box,
@@ -23,7 +24,11 @@ import {
   Grid,
   Paper,
   Chip,
-  CircularProgress
+  CircularProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -69,10 +74,12 @@ const UploadLabel = styled('label')(({ theme }) => ({
 }));
 
 const PostItem = () => {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
     description: '',
     category: '',
+    size: '',
     price: '',
     condition: '',
     location: '',
@@ -83,6 +90,7 @@ const PostItem = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState('');
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -92,9 +100,21 @@ const PostItem = () => {
   const handleImageUpload = (e) => {
     const files = Array.from(e.target.files);
     if (files.length + formData.images.length > 5) {
+      setSnackbarMessage('Maximum 5 images allowed');
       setSnackbarOpen(true);
       return;
     }
+    
+    // Validate image types
+    const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+    const invalidFiles = files.filter(file => !validTypes.includes(file.type));
+    
+    if (invalidFiles.length > 0) {
+      setSnackbarMessage('Only JPG, PNG, and WEBP images are allowed');
+      setSnackbarOpen(true);
+      return;
+    }
+    
     setFormData(prev => ({ ...prev, images: [...prev.images, ...files] }));
   };
 
@@ -113,6 +133,7 @@ const PostItem = () => {
     setTimeout(() => {
       setIsSubmitting(false);
       setSubmitSuccess(true);
+      // In a real app, you would navigate to marketplace or save the item
     }, 1500);
   };
 
@@ -149,7 +170,7 @@ const PostItem = () => {
               <Button 
                 variant="contained" 
                 size="large"
-                onClick={() => window.location.href = '/marketplace'}
+                onClick={() => navigate('/marketplace')}
                 sx={{ borderRadius: 2, px: 4 }}
               >
                 View Marketplace
@@ -178,13 +199,13 @@ const PostItem = () => {
         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
       >
         <Alert severity="error" onClose={handleSnackbarClose} sx={{ width: '100%' }}>
-          Maximum 5 images allowed
+          {snackbarMessage}
         </Alert>
       </Snackbar>
 
       <Button 
         startIcon={<ArrowLeft size={20} />}
-        onClick={() => window.history.back()}
+        onClick={() => navigate(-1)}
         sx={{ mb: 3, color: 'text.secondary' }}
       >
         Back
@@ -298,7 +319,32 @@ const PostItem = () => {
                 </FormControl>
               </Grid>
               
-              <Grid item xs={12} md={6}>
+              {formData.category === 'clothing' && (
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth sx={{ mb: 2 }}>
+                    <InputLabel>Size</InputLabel>
+                    <Select
+                      label="Size"
+                      name="size"
+                      value={formData.size}
+                      onChange={handleChange}
+                      required
+                    >
+                      <MenuItem value="">Select Size</MenuItem>
+                      <MenuItem value="XS">XS</MenuItem>
+                      <MenuItem value="S">S</MenuItem>
+                      <MenuItem value="M">M</MenuItem>
+                      <MenuItem value="L">L</MenuItem>
+                      <MenuItem value="XL">XL</MenuItem>
+                      <MenuItem value="XXL">XXL</MenuItem>
+                      <MenuItem value="XXXL">XXXL</MenuItem>
+                      <MenuItem value="custom">Custom Size</MenuItem>
+                    </Select>
+                  </FormControl>
+                </Grid>
+              )}
+              
+              <Grid item xs={12} md={formData.category === 'clothing' ? 6 : 6}>
                 <TextField
                   fullWidth
                   label="Price (₹)"

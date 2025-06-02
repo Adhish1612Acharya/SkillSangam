@@ -16,6 +16,7 @@ import FileGrievance from '../pages/grievance/FileGrievance'
 import TrackGrievance from '../pages/grievance/TrackGrievance'
 import Marketplace from '../pages/marketplace/Marketplace'
 import PostItem from '../pages/marketplace/PostItem'
+import Location from '../pages/marketplace/Location'
 import ItemChat from '../pages/marketplace/ItemChat'
 import SOSPage from '../pages/emergency/SOSPage'
 import Forum from '../pages/community/Forum'
@@ -50,6 +51,7 @@ const AppRoutes = () => {
         <Route path="grievance/track/:id" element={<TrackGrievance />} />
         <Route path="marketplace" element={<Marketplace />} />
         <Route path="marketplace/post" element={<PostItem />} />
+        <Route path="marketplace/location/:id" element={<Location />} />
         <Route path="marketplace/chat/:id" element={<ItemChat />} />
         <Route path="emergency" element={<SOSPage />} />
         <Route path="community/forum" element={<Forum />} />
