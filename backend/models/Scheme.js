@@ -1,11 +1,12 @@
 import mongoose from "mongoose";
+import Department from "./Department";
 
 const schemeSchema = new mongoose.Schema({
   title: {
     type: String,
     required: true,
   },
-  description: { 
+  description: {
     type: String,
     required: true,
   },
@@ -17,28 +18,30 @@ const schemeSchema = new mongoose.Schema({
       time: {
         type: Date,
         default: Date.now,
-      }
-    }
+      },
+    },
   ],
   details: [
-  {
-  feild:{
-    type:String
-  },
-  feildType:{
-    type:String
-  }  
-  }
+    {
+      feild: {
+        type: String,
+      },
+      feildType: {
+        type: String,
+      },
+    },
   ],
-  owner: {
+  department: {
     type: mongoose.Schema.Types.ObjectId,
-    ref: 'Official',
+    ref: "Department",
     required: true,
   },
   application: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Application",
-  }
+  },
 });
 
-export default mongoose.model("Schemes", schemeSchema);
+const Scheme = mongoose.model("Scheme", schemeSchema);
+
+export default Scheme;
