@@ -34,6 +34,11 @@ const officerSchema = new Schema(
       ref: "Department",
       required: true,
     },
+    role: {
+      type: String,
+      enum: ["officer"],
+      default: "officer",
+    },
   },
   {
     timestamps: true,
@@ -41,7 +46,7 @@ const officerSchema = new Schema(
 );
 
 // Attach Passport-Local Mongoose Plugin
-personnelSchema.plugin(passportLocalMongoose);
+officerSchema.plugin(passportLocalMongoose);
 
 const Officer = mongoose.model("Officer", personnelSchema);
-export default Personnel;
+export default Officer;

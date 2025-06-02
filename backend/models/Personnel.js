@@ -37,6 +37,11 @@ const personnelSchema = new Schema(
       type: String,
       default: null,
     },
+    role: {
+      type: String,
+      enum: ["personnel"],
+      default: "personnel",
+    },
   },
   {
     timestamps: true,

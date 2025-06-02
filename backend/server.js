@@ -15,6 +15,11 @@ import initSocket from "./socket.js";
 import { Strategy as localStrategy } from "passport-local";
 import passport from "passport";
 import MongoStore from "connect-mongo";
+import Admin from "./models/Admin.js";
+
+import Family from "./models/Family.js";
+import Officer from "./models/Officer.js";
+import Personnel from "./models/Personnel.js";
 // dotenv.config();
 const app = express();
 //socket connection
@@ -86,32 +91,54 @@ app.use(session(sessionOptions));
 app.use(passport.initialize());
 app.use(passport.session());
 
-// passport.use("expert", new localStrategy(Expert.authenticate()));
-
-// passport.use("user", new localStrategy(User.authenticate()));
+// LocalStrategy for Admin
+passport.use("admin", new localStrategy(Admin.authenticate()));
+// LocalStrategy for Officer
+passport.use("officer", new localStrategy(Officer.authenticate()));
+// LocalStrategy for Family
+passport.use("family", new localStrategy(Family.authenticate()));
+// LocalStrategy for Personnel
+passport.use("personnel", new localStrategy(Personnel.authenticate()));
 
 passport.serializeUser((entity, done) => {
-
   done(null, { id: entity._id, type: entity.role });
 });
 
 passport.deserializeUser((obj, done) => {
   switch (obj.type) {
-    case "expert":
-      Expert.findById(obj.id).then((user) => {
+    case "admin":
+      Admin.findById(obj.id).then((user) => {
         if (user) {
           done(null, user);
         } else {
-          done(new Error("Client id not found: " + obj.id));
+          done(new Error("Admin id not found: " + obj.id));
         }
       });
       break;
-    case "user":
-      User.findById(obj.id).then((user) => {
+    case "officer":
+      Officer.findById(obj.id).then((user) => {
         if (user) {
           done(null, user);
         } else {
-          done(new Error("Client id not found: " + obj.id));
+          done(new Error("Officer id not found: " + obj.id));
+        }
+      });
+      break;
+    case "family":
+      Family.findById(obj.id).then((user) => {
+        if (user) {
+          done(null, user);
+        } else {
+          done(new Error("Family id not found: " + obj.id));
+        }
+      });
+      break;
+    case "personnel":
+      Personnel.findById(obj.id).then((user) => {
+        if (user) {
+          done(null, user);
+        } else {
+          done(new Error("Family id not found: " + obj.id));
         }
       });
       break;
@@ -149,7 +176,6 @@ app.get("/api/user/data", (req, res) => {
 // app.use("/api/prakrathi", prakrathiRoutes);
 // app.use("/api/healthChallenge", healthChallenge);
 // app.use("/api/chat", chatRoutes);
-
 
 // app.use("/auth/google", expertGoogleAuth);
 // app.use("/api/auth/google/user", userGoogleAuth);
@@ -205,7 +231,6 @@ const port = process.env.PORT || 3000;
 // });
 // 404 handler
 
-
 app.all("*", (req, res, next) => {
   next(new ExpressError("Page Not Found", 404));
 });
@@ -215,7 +240,6 @@ app.use((err, req, res, next) => {
   const { statusCode = 500, message = "Something went wrong" } = err;
   res.status(statusCode).json({ error: message });
 });
-
 
 app.listen(port, () => {
   console.log("Server listening on port: ", port);
