@@ -48,5 +48,5 @@ const officerSchema = new Schema(
 // Attach Passport-Local Mongoose Plugin
 officerSchema.plugin(passportLocalMongoose);
 
-const Officer = mongoose.model("Officer", personnelSchema);
+const Officer = mongoose.model("Officer", officerSchema);
 export default Officer;

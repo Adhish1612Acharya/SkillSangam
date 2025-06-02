@@ -7,16 +7,16 @@ import cors from "cors";
 import mongoose from "mongoose";
 import session from "express-session";
 import bodyParser from "body-parser";
-import errorHandler from "./utils/errorHandler.js";
+// import errorHandler from "./utils/errorHandler.js";
 // import { Server } from 'socket.io';
 import http from "http";
 import { Server } from "socket.io";
-import initSocket from "./socket.js";
+// import initSocket from "./socket.js";
 import { Strategy as localStrategy } from "passport-local";
 import passport from "passport";
 import MongoStore from "connect-mongo";
-import Admin from "./models/Admin.js";
 
+import Admin from "./models/Admin.js";
 import Family from "./models/Family.js";
 import Officer from "./models/Officer.js";
 import Personnel from "./models/Personnel.js";
@@ -198,7 +198,7 @@ if (process.env.NODE_ENV === "local") {
 //   res.sendFile(path.join(buildPath, "index.html"));
 // });
 
-app.use(errorHandler);
+// app.use(errorHandler);
 
 const port = process.env.PORT || 3000;
 
