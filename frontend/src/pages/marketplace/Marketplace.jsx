@@ -1,10 +1,11 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   FilterList, 
   Favorite, 
   FavoriteBorder, 
-  Message, 
+  LocationOn, 
   ShoppingBag 
 } from '@mui/icons-material';
 import {
@@ -12,7 +13,6 @@ import {
   Typography,
   Card,
   CardContent,
-  CardHeader,
   CardMedia,
   CardActions,
   TextField,
@@ -24,7 +24,8 @@ import {
   MenuItem,
   IconButton,
   Chip,
-  Paper
+  Paper,
+  Pagination
 } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -37,19 +38,25 @@ const StyledCard = styled(Card)(({ theme }) => ({
 }));
 
 const Marketplace = () => {
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [category, setCategory] = useState('all');
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 6;
   
   const items = [
     {
       id: 1,
-      title: 'Military Boots (Size 10)',
+      title: 'Military Boots',
       description: 'Gently used combat boots, excellent condition',
       price: '₹1200',
       category: 'clothing',
-      location: 'Delhi Cantt',
+      size: '10',
+      condition: 'excellent',
+      location: 'Delhi Cantt, New Delhi',
       posted: '2 days ago',
       seller: 'Capt. Sharma',
+      contact: '+91 9876543210',
       isFavorite: false,
       image: '/placeholder-boots.jpg'
     },
@@ -59,9 +66,11 @@ const Marketplace = () => {
       description: 'Brand new, never used 30L backpack with multiple compartments',
       price: '₹2500',
       category: 'gear',
-      location: 'Pune',
+      condition: 'new',
+      location: 'Pune, Maharashtra',
       posted: '1 week ago',
       seller: 'Maj. Singh',
+      contact: '+91 8765432109',
       isFavorite: true,
       image: '/placeholder-backpack.jpg'
     },
@@ -71,9 +80,11 @@ const Marketplace = () => {
       description: 'Collection of 5 books on Indian military history',
       price: '₹800',
       category: 'books',
-      location: 'Bangalore',
+      condition: 'good',
+      location: 'Bangalore, Karnataka',
       posted: '3 days ago',
       seller: 'Lt. Verma',
+      contact: '+91 7654321098',
       isFavorite: false,
       image: '/placeholder-books.jpg'
     },
@@ -83,11 +94,42 @@ const Marketplace = () => {
       description: '4-person tent, used twice, includes rainfly',
       price: '₹3500',
       category: 'gear',
-      location: 'Mumbai',
+      condition: 'good',
+      location: 'Mumbai, Maharashtra',
       posted: '5 days ago',
       seller: 'Hav. Kumar',
+      contact: '+91 6543210987',
       isFavorite: false,
       image: '/placeholder-tent.jpg'
+    },
+    {
+      id: 5,
+      title: 'Olive Green Jacket',
+      description: 'Military style jacket, size XL, excellent condition',
+      price: '₹1500',
+      category: 'clothing',
+      size: 'XL',
+      condition: 'excellent',
+      location: 'Chennai, Tamil Nadu',
+      posted: '1 day ago',
+      seller: 'Col. Reddy',
+      contact: '+91 9432109876',
+      isFavorite: false,
+      image: '/placeholder-jacket.jpg'
+    },
+    {
+      id: 6,
+      title: 'Field Binoculars',
+      description: '10x42 magnification, waterproof, with case',
+      price: '₹4200',
+      category: 'gear',
+      condition: 'good',
+      location: 'Hyderabad, Telangana',
+      posted: '1 week ago',
+      seller: 'Maj. Khan',
+      contact: '+91 8321098765',
+      isFavorite: true,
+      image: '/placeholder-binoculars.jpg'
     }
   ];
 
@@ -98,9 +140,18 @@ const Marketplace = () => {
     return matchesSearch && matchesCategory;
   });
 
+  const paginatedItems = filteredItems.slice(
+    (page - 1) * itemsPerPage,
+    page * itemsPerPage
+  );
+
   const toggleFavorite = (id) => {
     // In a real app, this would update the state or make an API call
     console.log(`Toggled favorite for item ${id}`);
+  };
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
   };
 
   return (
@@ -113,7 +164,7 @@ const Marketplace = () => {
       </Typography>
       
       {/* Search and Filter */}
-      <Card sx={{ mb: 3, p: 2 }}>
+      <Card sx={{ mb: 3, p: 2, borderRadius: 2, boxShadow: 2 }}>
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <TextField
@@ -160,8 +211,8 @@ const Marketplace = () => {
       
       {/* Items List */}
       <Grid container spacing={3}>
-        {filteredItems.length > 0 ? (
-          filteredItems.map((item) => (
+        {paginatedItems.length > 0 ? (
+          paginatedItems.map((item) => (
             <Grid item xs={12} sm={6} md={4} key={item.id}>
               <StyledCard>
                 <CardMedia
@@ -192,6 +243,7 @@ const Marketplace = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
                     <Typography variant="h6" component="h3" sx={{ fontWeight: 'medium' }}>
                       {item.title}
+                      {item.size && ` (Size ${item.size})`}
                     </Typography>
                     <Typography variant="h6" color="primary" sx={{ fontWeight: 'bold' }}>
                       {item.price}
@@ -200,24 +252,30 @@ const Marketplace = () => {
                   <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                     {item.description}
                   </Typography>
-                  <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
-                    <Chip label={item.location} size="small" />
-                    <Typography variant="caption" color="text.secondary">
-                      {item.posted}
-                    </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                    <Chip label={item.condition} size="small" color="primary" variant="outlined" />
+                    <Chip label={item.location.split(',')[0]} size="small" />
                   </Box>
+                  <Typography variant="caption" color="text.secondary">
+                    {item.posted} • {item.seller}
+                  </Typography>
                 </CardContent>
                 <Divider />
                 <CardActions sx={{ justifyContent: 'space-between', p: 2 }}>
-                  <Button size="small" color="primary">
+                  <Button 
+                    size="small" 
+                    color="primary"
+                    onClick={() => navigate(`/marketplace/item/${item.id}`)}
+                  >
                     View Details
                   </Button>
                   <Button 
                     size="small" 
                     color="primary"
-                    startIcon={<Message />}
+                    startIcon={<LocationOn />}
+                    onClick={() => navigate(`/marketplace/location/${item.id}`, { state: { location: item.location } })}
                   >
-                    Chat
+                    View Location
                   </Button>
                 </CardActions>
               </StyledCard>
@@ -234,8 +292,25 @@ const Marketplace = () => {
         )}
       </Grid>
       
+      {filteredItems.length > itemsPerPage && (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+          <Pagination
+            count={Math.ceil(filteredItems.length / itemsPerPage)}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            shape="rounded"
+          />
+        </Box>
+      )}
+      
       <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-        <Button variant="contained" size="large" sx={{ px: 4 }}>
+        <Button 
+          variant="contained" 
+          size="large" 
+          sx={{ px: 4 }}
+          onClick={() => navigate('/marketplace/post')}
+        >
           Post New Item
         </Button>
       </Box>

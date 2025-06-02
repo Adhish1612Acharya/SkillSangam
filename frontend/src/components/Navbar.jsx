@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import logo from '../assets/logo.svg';
 import { 
   Home,
   User,
@@ -203,7 +204,12 @@ const Navbar = () => {
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Box component={Link} to="/" sx={{ display: 'flex', alignItems: 'center', textDecoration: 'none', color: 'inherit' }}>
-            <Shield size={24} color={theme.palette.primary.main} />
+            <Box
+    component="img"
+    src={logo}
+    alt="Logo"
+    sx={{ width: 70, height: 70 }}
+  />
             <Typography
               variant="h6"
               noWrap
