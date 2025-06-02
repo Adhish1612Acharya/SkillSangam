@@ -9,6 +9,12 @@ const personnelSchema = new Schema(
       required: true,
       unique: true,
     },
+    email: {
+      type: String,
+      required: true,
+      unique: true,
+      match: /.+\@.+\..+/,
+    },
     profile: {
       joinDate: {
         type: Date,
@@ -19,6 +25,19 @@ const personnelSchema = new Schema(
         required: true,
       },
       post: {
+        type: String,
+        required: true,
+      },
+      serviceNumber: {
+        type: String,
+        required: true,
+        unique: true,
+      },
+      rank: {
+        type: String,
+        required: true,
+      },
+      unitOrRegiment: {
         type: String,
         required: true,
       },
@@ -36,6 +55,11 @@ const personnelSchema = new Schema(
     familyCode: {
       type: String,
       default: null,
+    },
+    role: {
+      type: String,
+      enum: ["personnel"],
+      default: "personnel",
     },
   },
   {
