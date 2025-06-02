@@ -31,7 +31,7 @@ const ProtectedRoute = () => {
 
   if (loading) return <div className="p-4">Checking authentication...</div>;
 
-  if (!loading && !isLoggedIn) return <Navigate to="/auth" replace />;
+  if (!loading && !isLoggedIn) return <Navigate to="/login" replace />;
 
   return !loading && isLoggedIn && <Outlet />;
 };
