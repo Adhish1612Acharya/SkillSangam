@@ -9,20 +9,23 @@ const personnelSchema = new Schema(
       required: true,
       unique: true,
     },
-    profile: {
-      joinDate: {
-        type: Date,
-        required: true,
+    members: [
+      {
+        name: {
+          type: String,
+          required: true,
+        },
+        adhaarNumber: {
+          type: String,
+          required: true,
+        },
+        relationship: {
+          type: String,
+          required: true,
+          enum: ["self", "spouse", "child", "parent", "sibling", "other"],
+        },
       },
-      fullName: {
-        type: String,
-        required: true,
-      },
-      post: {
-        type: String,
-        required: true,
-      },
-    },
+    ],
     familyHead: {
       fullName: {
         type: String,
@@ -31,6 +34,11 @@ const personnelSchema = new Schema(
       adhaarNumber: {
         type: String,
         required: true,
+      },
+      relationship: {
+        type: String,
+        required: true,
+        enum: ["self", "spouse", "child", "parent", "sibling", "other"],
       },
     },
     familyCode: {
