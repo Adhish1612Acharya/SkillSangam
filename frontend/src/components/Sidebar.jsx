@@ -10,6 +10,7 @@ import {
   Avatar,
   useTheme
 } from '@mui/material';
+import logo from '../assets/logo.svg';
 import { Link, useLocation } from 'react-router-dom';
 import { 
   Home, 
@@ -83,24 +84,20 @@ const Sidebar = ({ role }) => {
       }}
     >
       <Box sx={{ p: 3, textAlign: 'center' }}>
-        <Avatar 
-          sx={{ 
-            width: 56, 
-            height: 56, 
-            bgcolor: theme.palette.primary.main,
-            mb: 2,
-            mx: 'auto'
-          }}
-        >
-          SS
-        </Avatar>
-        <Typography variant="h6" fontWeight="bold" color="primary">
-          Sainik Sahayak
-        </Typography>
-        <Typography variant="caption" color="text.secondary">
-          {role ? `${role} Portal` : 'Portal'}
-        </Typography>
-      </Box>
+  <Box
+    component="img"
+    src={logo}
+    alt="Logo"
+    sx={{ width: 110, height: 110, mx: 'auto' }} // 👈 centers the image horizontally
+  />
+  <Typography variant="h6" fontWeight="bold" color="primary">
+    Sainik Sahayak
+  </Typography>
+  <Typography variant="caption" color="text.secondary">
+    {role ? `${role} Portal` : 'Portal'}
+  </Typography>
+</Box>
+
       
       <Divider />
       

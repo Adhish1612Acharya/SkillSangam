@@ -11,7 +11,9 @@ const adminSchema = new Schema(
     },
     departments: [
       {
+
         type: Schema.Types.ObjectId,
+
         ref: "Department",
       },
     ],

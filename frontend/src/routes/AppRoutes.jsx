@@ -1,3 +1,4 @@
+
 import { Routes, Route, Navigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import Layout from "../components/RoleBasedLayout";
@@ -28,6 +29,36 @@ import AdminProtectedRoute from "./AdminProtectedRoute";
 import OfficerProtectedRoute from "./OfficerProtectedRoute";
 import FamilyProtectedRoute from "./FamilyProtectedRoute";
 import PersonnelProtectedRoute from "./PersonnelProtectedRoute";
+
+import { Routes, Route, Navigate } from 'react-router-dom'
+import { useAuth } from '../context/AuthContext'
+import Layout from '../components/RoleBasedLayout'
+import Login from '../pages/auth/Login'
+import RegisterSoldier from '../pages/auth/RegisterSoldier'
+import RegisterFamily from '../pages/auth/RegisterFamily'
+import RegisterGovt from '../pages/auth/RegisterGovt'
+import RegisterAdmin from '../pages/auth/RegisterAdmin'
+import SoldierDashboard from '../pages/dashboard/SoldierDashboard'
+import FamilyDashboard from '../pages/dashboard/FamilyDashboard'
+import GovtDashboard from '../pages/dashboard/GovtDashboard'
+import AdminDashboard from '../pages/admin/AdminDashboard'
+import SchemeList from '../pages/schemes/SchemeList'
+import SchemeApply from '../pages/schemes/SchemeApply'
+import ApplicationStatus from '../pages/schemes/ApplicationStatus'
+import FileGrievance from '../pages/grievance/FileGrievance'
+import TrackGrievance from '../pages/grievance/TrackGrievance'
+import Marketplace from '../pages/marketplace/Marketplace'
+import PostItem from '../pages/marketplace/PostItem'
+import Location from '../pages/marketplace/Location'
+import ItemChat from '../pages/marketplace/ItemChat'
+import SOSPage from '../pages/emergency/SOSPage'
+import Forum from '../pages/community/Forum'
+import SuccessStories from '../pages/community/SuccessStories'
+import Events from '../pages/community/Events'
+import Chatbot from '../pages/ai/Chatbot'
+import AIBenefitRecommender from '../pages/ai/AIBenefitRecommender'
+import NotFound from '../pages/NotFound'
+
 
 const AppRoutes = () => {
   const { user, loading } = useAuth();
@@ -61,6 +92,21 @@ const AppRoutes = () => {
       {/* <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}> */}
         {/* Common Routes */}
         <Route path="schemes" element={<SchemeList />} />
+
+        <Route path="schemes/apply/:id" element={<SchemeApply />} />
+        <Route path="applications/:id" element={<ApplicationStatus />} />
+        <Route path="grievance/file" element={<FileGrievance />} />
+        <Route path="grievance/track/:id" element={<TrackGrievance />} />
+        <Route path="marketplace" element={<Marketplace />} />
+        <Route path="marketplace/post" element={<PostItem />} />
+        <Route path="marketplace/location/:id" element={<Location />} />
+        <Route path="marketplace/chat/:id" element={<ItemChat />} />
+        <Route path="emergency" element={<SOSPage />} />
+        <Route path="community/forum" element={<Forum />} />
+        <Route path="community/stories" element={<SuccessStories />} />
+        <Route path="community/events" element={<Events />} />
+        <Route path="ai/chatbot" element={<Chatbot />} />
+        <Route path="ai/recommender" element={<AIBenefitRecommender />} />
 
         {/* Role-Specific Protected Routes */}
         <Route element={<PersonnelProtectedRoute />}>

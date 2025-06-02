@@ -3,4 +3,11 @@ let isAdmin=(req,res,next)=>{
         next();
     }
 }
-export default {isAdmin};
+
+
+let familyMiddleware=(req,res,next)=>{
+    if (req.isAuthenticated() && req.user.modelName === 'Family'){
+        next();
+    }
+}
+export default {isAdmin,familyMiddleware};

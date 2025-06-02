@@ -59,5 +59,7 @@ const familySchema = new Schema(
 // Attach Passport-Local Mongoose Plugin
 familySchema.plugin(passportLocalMongoose);
 
+
 const Family = mongoose.model("Family", familySchema);
+
 export default Family;
