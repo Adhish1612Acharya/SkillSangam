@@ -44,7 +44,9 @@ const Loader = ({ loading }) => {
         
         {/* Logo in center */}
         <div className="absolute inset-0 flex items-center justify-center">
-          <img src={logo} alt="Logo" className="w-50 h-50 object-contain" />
+
+          <img src={logo} alt="Logo" className="w-40 h-40 object-contain" />
+
         </div>
       </div>
     </div>

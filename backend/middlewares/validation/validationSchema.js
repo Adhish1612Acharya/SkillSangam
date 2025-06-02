@@ -7,6 +7,7 @@ export const familySignupSchema = z.object({
   password: z.string().min(6),
   email: z.string().email(),
   username: z.string().min(1),
+  relationship: z.string().min(1), // Optional field for relationship
 });
 
 export const familyLoginSchema = z.object({
@@ -33,6 +34,10 @@ export const personnelSignupSchema = z.object({
   rank: z.string().min(1),
   unitOrRegiment: z.string().min(1),
   joinDate: z.string().min(1),
+  family: z.object({
+    adhaarNumber: z.string().min(1),
+    fullName: z.string().min(1),
+  }),
 });
 
 export const personnelLoginSchema = z.object({
