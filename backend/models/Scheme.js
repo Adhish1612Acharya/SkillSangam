@@ -31,7 +31,7 @@ const schemeSchema = new mongoose.Schema({
       },
     },
   ],
-  owner: {
+  department: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "Department",
     required: true,
