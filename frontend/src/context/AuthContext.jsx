@@ -1,44 +1,25 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useState, useContext } from "react";
 
-const AuthContext = createContext()
+// Create the context
+const AuthContext = createContext(undefined);
 
+// Context provider component
 export const AuthProvider = ({ children }) => {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
-
-  useEffect(() => {
-    // Simulate checking auth state
-    const timer = setTimeout(() => {
-      const storedUser = localStorage.getItem('user')
-      if (storedUser) {
-        setUser(JSON.parse(storedUser))
-      }
-      setLoading(false)
-    }, 1000)
-    
-    return () => clearTimeout(timer)
-  }, [])
-
-  const login = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData))
-    setUser(userData)
-  }
-
-  const logout = () => {
-    localStorage.removeItem('user')
-    setUser(null)
-  }
-
-  const register = (userData) => {
-    localStorage.setItem('user', JSON.stringify(userData))
-    setUser(userData)
-  }
+  const [isLoggedIn, setIsLoggedIn] = useState(undefined); // Can be true, false, or undefined
+  const [role, setRole] = useState(undefined); // Can be "user", "expert", or undefined
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, logout, register }}>
+    <AuthContext.Provider value={{ isLoggedIn, setIsLoggedIn, role, setRole }}>
       {children}
     </AuthContext.Provider>
-  )
-}
+  );
+};
 
-export const useAuth = () => useContext(AuthContext)
+// Custom hook to use the context
+export const useAuth = () => {
+  const context = useContext(AuthContext);
+  if (!context) {
+    throw new Error("useAuth must be used within an AuthProvider");
+  }
+  return context;
+};

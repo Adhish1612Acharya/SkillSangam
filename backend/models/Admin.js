@@ -11,7 +11,7 @@ const adminSchema = new Schema(
     },
     departments: [
       {
-        type: Schema.mongoose.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: "Department",
       },
     ],

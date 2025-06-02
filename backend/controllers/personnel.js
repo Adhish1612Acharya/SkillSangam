@@ -9,6 +9,8 @@ const generateFamilyCode = customAlphabet(alphabet, 6);
 export const addFamily = async (req, res) => {
   const { fullName, adhaarNumber } = req.body;
 
+  console.log("Received addFamily data:", req.body);
+
   // Step 1: Validate input
   if (!fullName || !adhaarNumber) {
     throw new ExpressError("Full name and Aadhaar number are required", 400);
@@ -54,30 +56,29 @@ export const signup = async (req, res) => {
     rank,
     unitOrRegiment,
     joinDate,
+    family, // Accept adhaarNumber for family head
   } = req.body;
 
-  if (
-    !fullName ||
-    !email ||
-    !password ||
-    !confirmPassword ||
-    !serviceNumber ||
-    !rank ||
-    !unitOrRegiment ||
-    !joinDate
-  ) {
-    throw new ExpressError("All fields are required", 400);
-  }
+  console.log("Received signup data:", req.body);
+
   if (password !== confirmPassword) {
     throw new ExpressError("Passwords do not match", 400);
   }
 
   const username = email; // Use email as username for login
 
+  // Step 1: Generate familyCode
+  const familyCode = generateFamilyCode();
+
+  // Step 2: Create Personnel with familyHead and familyCode
   const newPersonnel = new Personnel({
     username,
     email,
-
+    familyCode,
+    familyHead: {
+      fullName: family.fullName,
+      adhaarNumber: family.adhaarNumber,
+    },
     profile: {
       fullName,
       joinDate,
@@ -104,7 +105,7 @@ export const signup = async (req, res) => {
       } else {
         return res
           .status(200)
-          .json({ success: true, message: "successSignUp" });
+          .json({ success: true, message: "successSignUp", familyCode });
       }
     });
   } else {

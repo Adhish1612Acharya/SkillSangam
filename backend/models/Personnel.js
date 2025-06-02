@@ -45,12 +45,19 @@ const personnelSchema = new Schema(
     familyHead: {
       fullName: {
         type: String,
-        required: true,
+        default: "",
       },
       adhaarNumber: {
         type: String,
-        required: true,
+        // required: true,
+        default: "",
       },
+      // relationship: {
+      //   type: String,
+      //   required: true,
+      //   enum: ["self", "spouse", "child", "parent", "sibling", "other"],
+      //   default: "self",
+      // },
     },
     familyCode: {
       type: String,

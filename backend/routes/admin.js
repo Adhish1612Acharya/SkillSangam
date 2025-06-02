@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import { login, failureLogin, logout } from "../controllers/admin.js";
+import { login, failureLogin, logout, signUp } from "../controllers/admin.js";
 import { validateBody } from "../middlewares/validation/validationMiddleware.js";
 import { adminLoginSchema } from "../middlewares/validation/validationSchema.js";
 
@@ -21,5 +21,8 @@ router.get("/failureLogin", failureLogin);
 
 // Admin Logout
 router.post("/logout", logout);
+
+// Admin Sign Up
+router.post("/signup", signUp);
 
 export default router;

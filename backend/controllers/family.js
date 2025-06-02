@@ -5,12 +5,13 @@ import Personnel from "../models/Personnel.js";
 import ExpressError from "../utils/expressError.js";
 
 export const signup = async (req, res) => {
-  const { fullName, adhaarNumber, familyCode, password, email, username } =
+  const { fullName, adhaarNumber, familyCode, password, email, username,relationship } =
     req.body;
   // 1. Verify Personnel
   const personnel = await Personnel.findOne({
     "familyHead.fullName": fullName,
     "familyHead.adhaarNumber": adhaarNumber,
+    // "familyHead.relationship": relationship,
     familyCode: familyCode,
   });
   if (!personnel) {
