@@ -5,10 +5,11 @@ import Login from '../pages/auth/Login'
 import RegisterSoldier from '../pages/auth/RegisterSoldier'
 import RegisterFamily from '../pages/auth/RegisterFamily'
 import RegisterGovt from '../pages/auth/RegisterGovt'
+import RegisterAdmin from '../pages/auth/RegisterAdmin'
 import SoldierDashboard from '../pages/dashboard/SoldierDashboard'
 import FamilyDashboard from '../pages/dashboard/FamilyDashboard'
 import GovtDashboard from '../pages/dashboard/GovtDashboard'
-import AdminDashboard from '../pages/dashboard/AdminDashboard'
+import AdminDashboard from '../pages/admin/AdminDashboard'
 import SchemeList from '../pages/schemes/SchemeList'
 import SchemeApply from '../pages/schemes/SchemeApply'
 import ApplicationStatus from '../pages/schemes/ApplicationStatus'
@@ -40,6 +41,7 @@ const AppRoutes = () => {
       <Route path="/register/soldier" element={!user ? <RegisterSoldier /> : <Navigate to="/" />} />
       <Route path="/register/family" element={!user ? <RegisterFamily /> : <Navigate to="/" />} />
       <Route path="/register/govt" element={!user ? <RegisterGovt /> : <Navigate to="/" />} />
+      <Route path="/register/admin" element={!user ? <RegisterAdmin /> : <Navigate to="/" />} />
 
       {/* Protected Routes */}
       <Route path="/" element={user ? <Layout /> : <Navigate to="/login" />}>
@@ -67,6 +69,8 @@ const AppRoutes = () => {
           user?.role === 'govt' ? <GovtDashboard /> :
           <AdminDashboard />
         } />
+        <Route path="admin" element={<AdminDashboard />} />
+        <Route path="gov-official" element={<GovtDashboard />} />
       </Route>
 
       {/* 404 */}
