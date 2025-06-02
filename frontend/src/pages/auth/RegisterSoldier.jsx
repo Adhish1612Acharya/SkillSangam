@@ -180,7 +180,7 @@ const RegisterSoldier = () => {
               </Typography>
               
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -192,7 +192,7 @@ const RegisterSoldier = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -205,7 +205,7 @@ const RegisterSoldier = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -218,7 +218,7 @@ const RegisterSoldier = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -238,7 +238,7 @@ const RegisterSoldier = () => {
               </Typography>
               
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -250,7 +250,7 @@ const RegisterSoldier = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <FormControl fullWidth>
                     <InputLabel id="rank-label">Rank</InputLabel>
                     <Select
@@ -273,7 +273,7 @@ const RegisterSoldier = () => {
                     </Select>
                   </FormControl>
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -285,7 +285,7 @@ const RegisterSoldier = () => {
                     variant="outlined"
                   />
                 </Grid>
-                <Grid item xs={12} sm={6}>
+                <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                   <TextField
                     required
                     fullWidth
@@ -337,7 +337,7 @@ const RegisterSoldier = () => {
                   </Typography>
                   <Grid container spacing={2}>
                     {familyMembers.map(member => (
-                      <Grid item xs={12} sm={6} key={member.id}>
+                      <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }} key={member.id}>
                         <Paper variant="outlined" sx={{ p: 2, position: 'relative' }}>
                           <Box sx={{ 
                             position: 'absolute', 
@@ -388,7 +388,7 @@ const RegisterSoldier = () => {
                       Add Family Member
                     </Typography>
                     <Grid container spacing={2}>
-                      <Grid item xs={12} sm={6}>
+                      <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                         <TextField
                           fullWidth
                           label="Name"
@@ -399,7 +399,7 @@ const RegisterSoldier = () => {
                           required
                         />
                       </Grid>
-                      <Grid item xs={12} sm={6}>
+                      <Grid sx={{ gridColumn: { xs: 'span 12', sm: 'span 6' } }}>
                         <FormControl fullWidth>
                           <InputLabel>Relation</InputLabel>
                           <Select
@@ -416,7 +416,7 @@ const RegisterSoldier = () => {
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Grid item xs={12}>
+                      <Grid sx={{ gridColumn: { xs: 'span 12' } }}>
                         <TextField
                           fullWidth
                           label="Email (Optional)"

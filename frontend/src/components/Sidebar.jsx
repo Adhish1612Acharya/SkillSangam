@@ -1,81 +1,141 @@
-import { Link, useLocation } from 'react-router-dom'
-import { Home, User, FileText, AlertCircle, ShoppingCart, MessageSquare, Heart, Calendar, Settings } from 'lucide-react'
+import { 
+  List, 
+  ListItem, 
+  ListItemButton, 
+  ListItemIcon, 
+  ListItemText, 
+  Divider, 
+  Box, 
+  Typography,
+  Avatar,
+  useTheme
+} from '@mui/material';
+import { Link, useLocation } from 'react-router-dom';
+import { 
+  Home, 
+  Person, 
+  Description, 
+  Warning, 
+  ShoppingCart, 
+  Forum, 
+  Favorite, 
+  Event, 
+  Settings 
+} from '@mui/icons-material';
 
 const Sidebar = ({ role }) => {
-  const location = useLocation()
-  
+  const location = useLocation();
+  const theme = useTheme();
+
   const commonLinks = [
     { name: 'Dashboard', path: '/', icon: Home },
-    { name: 'Schemes', path: '/schemes', icon: FileText },
+    { name: 'Schemes', path: '/schemes', icon: Description },
     { name: 'Marketplace', path: '/marketplace', icon: ShoppingCart },
-    { name: 'Community', path: '/community/forum', icon: MessageSquare },
-    { name: 'Emergency', path: '/emergency', icon: AlertCircle },
-  ]
+    { name: 'Community', path: '/community/forum', icon: Forum },
+    { name: 'Emergency', path: '/emergency', icon: Warning },
+  ];
 
   const soldierLinks = [
-    { name: 'My Profile', path: '/profile', icon: User },
-    { name: 'Success Stories', path: '/community/stories', icon: Heart },
-    { name: 'Events', path: '/community/events', icon: Calendar },
+    { name: 'My Profile', path: '/profile', icon: Person },
+    { name: 'Success Stories', path: '/community/stories', icon: Favorite },
+    { name: 'Events', path: '/community/events', icon: Event },
     { name: 'AI Tools', path: '/ai/chatbot', icon: Settings },
-  ]
+  ];
 
   const familyLinks = [
-    { name: 'Family Profile', path: '/profile', icon: User },
-    { name: 'Success Stories', path: '/community/stories', icon: Heart },
-    { name: 'Events', path: '/community/events', icon: Calendar },
-  ]
+    { name: 'Family Profile', path: '/profile', icon: Person },
+    { name: 'Success Stories', path: '/community/stories', icon: Favorite },
+    { name: 'Events', path: '/community/events', icon: Event },
+  ];
 
   const govtLinks = [
-    { name: 'Applications', path: '/applications', icon: FileText },
-    { name: 'Grievances', path: '/grievances', icon: AlertCircle },
+    { name: 'Applications', path: '/applications', icon: Description },
+    { name: 'Grievances', path: '/grievances', icon: Warning },
     { name: 'Scheme Management', path: '/schemes/manage', icon: Settings },
-  ]
+  ];
 
   const adminLinks = [
-    { name: 'User Management', path: '/admin/users', icon: User },
+    { name: 'User Management', path: '/admin/users', icon: Person },
     { name: 'Content Moderation', path: '/admin/moderation', icon: Settings },
-  ]
+  ];
 
   const getRoleSpecificLinks = () => {
     switch (role) {
-      case 'soldier': return soldierLinks
-      case 'family': return familyLinks
-      case 'govt': return govtLinks
-      case 'admin': return adminLinks
-      default: return []
+      case 'soldier': return soldierLinks;
+      case 'family': return familyLinks;
+      case 'govt': return govtLinks;
+      case 'admin': return adminLinks;
+      default: return [];
     }
-  }
+  };
 
-  const allLinks = [...commonLinks, ...getRoleSpecificLinks()]
+  const allLinks = [...commonLinks, ...getRoleSpecificLinks()];
 
   return (
-    <div className="w-64 bg-white shadow-md p-4">
-      <div className="mb-8 p-4">
-        <h2 className="text-xl font-bold text-primary">Sainik Sahayak</h2>
-        <p className="text-sm text-gray-500 capitalize">{role} Portal</p>
-      </div>
+    <Box
+      sx={{
+        width: 280,
+        height: '100vh',
+        backgroundColor: 'background.paper',
+        boxShadow: theme.shadows[3],
+        display: 'flex',
+        flexDirection: 'column'
+      }}
+    >
+      <Box sx={{ p: 3, textAlign: 'center' }}>
+        <Avatar 
+          sx={{ 
+            width: 56, 
+            height: 56, 
+            bgcolor: theme.palette.primary.main,
+            mb: 2,
+            mx: 'auto'
+          }}
+        >
+          SS
+        </Avatar>
+        <Typography variant="h6" fontWeight="bold" color="primary">
+          Sainik Sahayak
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {role ? `${role} Portal` : 'Portal'}
+        </Typography>
+      </Box>
       
-      <nav>
-        <ul className="space-y-2">
-          {allLinks.map((link) => (
-            <li key={link.path}>
-              <Link
-                to={link.path}
-                className={`flex items-center p-3 rounded-lg transition-colors ${
-                  location.pathname === link.path
-                    ? 'bg-primary text-white'
-                    : 'text-gray-700 hover:bg-gray-100'
-                }`}
-              >
-                <link.icon className="w-5 h-5 mr-3" />
-                <span>{link.name}</span>
-              </Link>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    </div>
-  )
-}
+      <Divider />
+      
+      <List sx={{ flexGrow: 1, p: 0 }}>
+        {allLinks.map((link) => (
+          <ListItem key={link.path} disablePadding>
+            <ListItemButton
+              component={Link}
+              to={link.path}
+              selected={location.pathname === link.path}
+              sx={{
+                px: 3,
+                py: 1.5,
+                '&.Mui-selected': {
+                  backgroundColor: theme.palette.primary.light,
+                  color: theme.palette.primary.main,
+                  '& .MuiListItemIcon-root': {
+                    color: theme.palette.primary.main,
+                  },
+                },
+                '&.Mui-selected:hover': {
+                  backgroundColor: theme.palette.primary.light,
+                },
+              }}
+            >
+              <ListItemIcon sx={{ minWidth: 40 }}>
+                <link.icon />
+              </ListItemIcon>
+              <ListItemText primary={link.name} />
+            </ListItemButton>
+          </ListItem>
+        ))}
+      </List>
+    </Box>
+  );
+};
 
-export default Sidebar
+export default Sidebar;
