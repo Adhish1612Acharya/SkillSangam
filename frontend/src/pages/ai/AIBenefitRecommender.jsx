@@ -19,7 +19,8 @@ import {
   Chip,
   Divider,
   Alert,
-  useTheme
+  useTheme,
+  CircularProgress
 } from '@mui/material';
 import { 
   Stars, 
@@ -28,7 +29,8 @@ import {
   Warning, 
   School, 
   HomeWork, 
-  HealthAndSafety 
+  HealthAndSafety, 
+  Person 
 } from '@mui/icons-material';
 
 const AIBenefitRecommender = () => {
