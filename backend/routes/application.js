@@ -66,7 +66,7 @@ router.get("/:id/reject", wrapAsync(async (req, res) => {
 /**
  * Post a rejection reason for an application
  */
-router.post("/:id/reject", wrapAsync(async (req, res) => {
+router.post("/:id/accept", wrapAsync(async (req, res) => {
   const { id } = req.params;
   const { rejectReason } = req.body;
 
@@ -74,7 +74,7 @@ router.post("/:id/reject", wrapAsync(async (req, res) => {
   if (!application) throw new ExpressError("Application not found", 404);
 
   application.rejectReason = rejectReason || "No reason provided";
-  application.status = { process: false, accepted: false };
+  application.status = { process: false, accepted: true };
   await application.save();
 
   res.json({

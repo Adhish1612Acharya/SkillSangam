@@ -1,4 +1,5 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
+const { Schema } = require("zod");
 
 const marketPlaceSchema = new mongoose.Schema({
   title: {
@@ -6,15 +7,24 @@ const marketPlaceSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  owner: {
+    type: mongoose.Types.ObjectId,
+    ref: "Family",
+  },
   category: {
     type: String,
     required: true,
-    enum: [ 
-        'Gear & Equipment','Books & Media','Electronics','Furniture','other'],
+    enum: [
+      "Gear & Equipment",
+      "Books & Media",
+      "Electronics",
+      "Furniture",
+      "other",
+    ],
   },
   size: {
     type: String,
-    enum: ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL', 'Custom Size'],
+    enum: ["XS", "S", "M", "L", "XL", "XXL", "XXXL", "Custom Size"],
     default: null,
   },
   price: {
@@ -40,9 +50,9 @@ const marketPlaceSchema = new mongoose.Schema({
       {
         url: String,
         filename: String,
-      }
+      },
     ],
-    validate: [arrayLimit, 'You can upload up to 5 images'],
+    validate: [arrayLimit, "You can upload up to 5 images"],
   },
   createdAt: {
     type: Date,
@@ -54,4 +64,4 @@ function arrayLimit(val) {
   return val.length <= 5;
 }
 
-module.exports = mongoose.model('Listing', marketPlaceSchema);
+module.exports = mongoose.model("Listing", marketPlaceSchema);
